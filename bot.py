@@ -1,10 +1,11 @@
 """
-MiaFood - assistant nutritionnel (version 2, Telegram)
+MiaFood - assistant nutritionnel (version 3, Telegram)
 
 Nouveautés de cette version :
-- les boutons sont attachés aux messages (juste sous la question)
-- un menu principal à boutons : plus besoin de taper des commandes
-- n'importe quel message envoyé au bot affiche le menu principal
+- le questionnaire demande le type de diabète (Type 1, Type 2, prédiabète)
+- « Mon plan de repas » affiche le plan du jour, avec un choix d'autres
+  situations (jour de marché, fête, harmattan, etc.)
+- les plans viennent du fichier plans.json (extrait du fichier Excel)
 
 Lancement local :
     export TELEGRAM_TOKEN="ton_token"
@@ -12,6 +13,7 @@ Lancement local :
 Sur Render, la variable RENDER_EXTERNAL_URL active le mode webhook.
 """
 
+import json
 import logging
 import os
 import re
@@ -33,10 +35,12 @@ logging.basicConfig(
 )
 log = logging.getLogger("miafood")
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.environ.get("DB_PATH", "miafood.db")
+PLANS_PATH = os.path.join(BASE_DIR, "plans.json")
 
 # Étapes du questionnaire
-SEXE, AGE, TAILLE, POIDS, ACTIVITE, OBJECTIF, PATHO = range(7)
+SEXE, AGE, TAILLE, POIDS, ACTIVITE, OBJECTIF, PATHO, TYPE_DIAB = range(8)
 
 # ---------------------------------------------------------------------------
 # Options proposées (boutons)
@@ -50,7 +54,16 @@ ACTIVITES = [
 ]
 LIBELLES_ACTIVITE = [a[0] for a in ACTIVITES]
 OBJECTIFS = ["Perdre du poids", "Améliorer ma santé", "Garder mon poids"]
-PATHOS = ["Aucune", "Diabète", "Hypertension", "Foie gras", "Enceinte ou allaitante"]
+PATHOS = [
+    "Aucune",
+    "Diabète",
+    "Diabète et hypertension",
+    "Hypertension",
+    "Foie gras",
+    "Enceinte ou allaitante",
+]
+PATHOS_DIABETE = {"Diabète", "Diabète et hypertension"}
+TYPES_DIABETE = ["Type 1", "Type 2", "Prédiabète", "Je ne sais pas"]
 
 TXT_SEXE = "Vous êtes :"
 TXT_ACTIVITE = (
@@ -62,10 +75,19 @@ TXT_ACTIVITE = (
 )
 TXT_OBJECTIF = "Quel est votre objectif principal ?"
 TXT_PATHO = "Avez-vous un problème de santé à prendre en compte ?"
+TXT_TYPE = (
+    "Quel type de diabète avez-vous ?\n"
+    "Si vous ne le savez pas, choisissez « Je ne sais pas » et demandez-le "
+    "à votre médecin."
+)
 
 AVERTISSEMENT = (
     "Ce bot donne des conseils généraux d'alimentation. Il ne remplace pas "
     "un médecin ou un nutritionniste."
+)
+AVERTISSEMENT_PLAN = (
+    "Ce plan est indicatif. Adaptez-le avec votre médecin, surtout si vous "
+    "prenez de l'insuline ou des médicaments."
 )
 
 ACCUEIL = (
@@ -81,6 +103,10 @@ CONSEILS = {
     "Diabète": "Privilégiez les aliments qui font peu monter le sucre (légumes, "
     "haricots, poisson) et limitez les boissons sucrées. Répartissez les "
     "féculents sur la journée. Suivez toujours les consignes de votre médecin.",
+    "Diabète et hypertension": "Privilégiez les aliments qui font peu monter le "
+    "sucre (légumes, haricots, poisson), limitez les boissons sucrées, et "
+    "réduisez le sel et les cubes d'assaisonnement. Suivez toujours les "
+    "consignes de votre médecin.",
     "Hypertension": "Limitez le sel, les cubes d'assaisonnement et les aliments "
     "très salés (poisson fumé salé, charcuterie). Mangez plus de légumes et de "
     "fruits. Suivez toujours les consignes de votre médecin.",
@@ -88,6 +114,71 @@ CONSEILS = {
     "Privilégiez légumes, poisson et cuissons à l'eau ou grillées. Un avis "
     "médical reste indispensable.",
 }
+
+# ---------------------------------------------------------------------------
+# Plans de repas (fichier plans.json, extrait de l'onglet Plans_Repas)
+# ---------------------------------------------------------------------------
+# Plans masqués en attendant une validation médicale (jeûne). Les plans de
+# diabète gestationnel ne sont jamais servis : le bot ne traite pas la grossesse.
+PLANS_EN_ATTENTE = {"PLAN-022", "PLAN-023"}
+TYPES_PLANS_SERVIS = {"Type 1", "Type 2", "Prédiabète", "Type 2 + Hypertension"}
+
+
+def charger_plans() -> dict:
+    try:
+        with open(PLANS_PATH, encoding="utf-8") as fh:
+            plans = json.load(fh)
+    except (OSError, ValueError):
+        log.error("plans.json introuvable ou invalide : aucun plan disponible")
+        return {}
+    return {
+        p["id"]: p
+        for p in plans
+        if p["id"] not in PLANS_EN_ATTENTE and p["type"] in TYPES_PLANS_SERVIS
+    }
+
+
+PLANS = charger_plans()
+
+
+def plans_pour(p) -> list:
+    """Plans adaptés à un profil (ligne SQLite ou dict)."""
+    if p["patho"] not in PATHOS_DIABETE:
+        return []
+    type_diab = p["type_diabete"] or ""
+    if type_diab not in ("Type 1", "Type 2", "Prédiabète"):
+        return []
+    types = [type_diab]
+    if type_diab == "Type 2" and p["patho"] == "Diabète et hypertension":
+        types = ["Type 2 + Hypertension", "Type 2"]
+    return [pl for t in types for pl in PLANS.values() if pl["type"] == t]
+
+
+def plan_par_defaut(liste: list, p):
+    if p["patho"] == "Diabète et hypertension":
+        for pl in liste:
+            if pl["type"] == "Type 2 + Hypertension":
+                return pl
+    for pl in liste:
+        if pl["situation"].lower().startswith("jour standard"):
+            return pl
+    return liste[0]
+
+
+def texte_plan(pl: dict, p) -> str:
+    r = pl["repas"]
+    t = (
+        f"Plan du jour : {pl['situation']}\n\n"
+        f"7h00, petit-déjeuner : {r['petit_dejeuner']}\n"
+        f"10h00, collation : {r['collation_matin']}\n"
+        f"13h00, déjeuner : {r['dejeuner']}\n"
+        f"16h00, collation : {r['collation_apres_midi']}\n"
+        f"19h00, dîner : {r['diner']}\n\n"
+        f"IG moyen estimé : {pl['ig']}"
+    )
+    if p["patho"] == "Diabète et hypertension" and pl["type"] != "Type 2 + Hypertension":
+        t += "\nPensez aussi à limiter le sel."
+    return t + "\n\n" + AVERTISSEMENT_PLAN
 
 
 # ---------------------------------------------------------------------------
@@ -101,10 +192,14 @@ def init_db() -> None:
                 user_id INTEGER PRIMARY KEY,
                 sexe TEXT, age INTEGER, taille REAL, poids REAL,
                 activite TEXT, objectif TEXT, patho TEXT,
-                imc REAL, kcal INTEGER
+                imc REAL, kcal INTEGER, type_diabete TEXT
             )
             """
         )
+        # Mise à jour d'une base créée par une version précédente
+        colonnes = [c[1] for c in db.execute("PRAGMA table_info(profils)")]
+        if "type_diabete" not in colonnes:
+            db.execute("ALTER TABLE profils ADD COLUMN type_diabete TEXT")
 
 
 def sauver_profil(user_id: int, p: dict) -> None:
@@ -112,12 +207,14 @@ def sauver_profil(user_id: int, p: dict) -> None:
         db.execute(
             """
             INSERT OR REPLACE INTO profils
-            (user_id, sexe, age, taille, poids, activite, objectif, patho, imc, kcal)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (user_id, sexe, age, taille, poids, activite, objectif, patho,
+             imc, kcal, type_diabete)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 user_id, p["sexe"], p["age"], p["taille"], p["poids"],
                 p["activite"], p["objectif"], p["patho"], p["imc"], p["kcal"],
+                p.get("type_diabete", ""),
             ),
         )
 
@@ -199,6 +296,14 @@ def menu_principal():
     )
 
 
+def boutons_plan(autres_situations: bool):
+    lignes = []
+    if autres_situations:
+        lignes.append([InlineKeyboardButton("Autre situation", callback_data="sits")])
+    lignes.append([InlineKeyboardButton("Menu", callback_data="accueil")])
+    return InlineKeyboardMarkup(lignes)
+
+
 async def repondre(update: Update, texte: str, markup=None) -> None:
     """Envoie un message, que l'on vienne d'un texte ou d'un bouton."""
     await update.effective_chat.send_message(texte, reply_markup=markup)
@@ -228,7 +333,7 @@ def nombre(texte: str):
 
 
 # ---------------------------------------------------------------------------
-# Accueil et menu principal (sans commandes à taper)
+# Accueil, profil, plan de repas (sans commandes à taper)
 # ---------------------------------------------------------------------------
 async def accueil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await repondre(update, ACCUEIL, menu_principal())
@@ -237,34 +342,76 @@ async def accueil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     p = lire_profil(update.effective_user.id)
     if p is None:
-        await repondre(
-            update, "Vous n'avez pas encore de profil.", menu_principal()
-        )
+        await repondre(update, "Vous n'avez pas encore de profil.", menu_principal())
         return
+    sante = p["patho"]
+    if p["type_diabete"]:
+        sante += f" ({p['type_diabete']})"
     await repondre(
         update,
         "Votre profil :\n"
         f"{p['sexe']}, {p['age']} ans, {p['taille']:.0f} cm, {p['poids']:.1f} kg\n"
         f"Activité : {p['activite']}\n"
         f"Objectif : {p['objectif']}\n"
-        f"Situation de santé : {p['patho']}\n"
+        f"Situation de santé : {sante}\n"
         f"IMC : {p['imc']} - Besoin estimé : environ {p['kcal']} kcal/jour",
         menu_principal(),
     )
 
 
 async def afficher_plan(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if lire_profil(update.effective_user.id) is None:
-        await repondre(
-            update, "Créez d'abord votre profil.", menu_principal()
-        )
+    p = lire_profil(update.effective_user.id)
+    if p is None:
+        await repondre(update, "Créez d'abord votre profil.", menu_principal())
         return
-    await repondre(
-        update,
-        "Les plans de repas arrivent bientôt. Cette partie sera ajoutée à la "
-        "prochaine version.",
-        menu_principal(),
-    )
+
+    liste = plans_pour(p)
+    if not liste:
+        if p["patho"] in PATHOS_DIABETE:
+            message = (
+                "Pour vous proposer un plan, j'ai besoin de connaître votre type "
+                "de diabète. Demandez-le à votre médecin, puis mettez à jour "
+                "votre profil."
+            )
+        else:
+            message = (
+                "Pour l'instant, les plans de repas sont disponibles pour les "
+                "personnes diabétiques (Type 1, Type 2, prédiabète). Les autres "
+                "profils arriveront bientôt."
+            )
+        await repondre(update, message, menu_principal())
+        return
+
+    pl = plan_par_defaut(liste, p)
+    await repondre(update, texte_plan(pl, p), boutons_plan(len(liste) > 1))
+
+
+async def liste_situations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.callback_query.answer()
+    p = lire_profil(update.effective_user.id)
+    liste = plans_pour(p) if p else []
+    if not liste:
+        await afficher_plan(update, context)
+        return
+    lignes = [
+        [InlineKeyboardButton(pl["situation"], callback_data=f"pl:{pl['id']}")]
+        for pl in liste
+    ]
+    lignes.append([InlineKeyboardButton("Menu", callback_data="accueil")])
+    await repondre(update, "Choisissez votre situation :", InlineKeyboardMarkup(lignes))
+
+
+async def montrer_plan(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    q = update.callback_query
+    await q.answer()
+    plan_id = q.data.split(":", 1)[1]
+    p = lire_profil(update.effective_user.id)
+    liste = plans_pour(p) if p else []
+    pl = next((x for x in liste if x["id"] == plan_id), None)
+    if pl is None:
+        await afficher_plan(update, context)
+        return
+    await repondre(update, texte_plan(pl, p), boutons_plan(len(liste) > 1))
 
 
 async def afficher_aide(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -286,6 +433,8 @@ async def bouton_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await afficher_plan(update, context)
     elif q.data == "aide":
         await afficher_aide(update, context)
+    elif q.data == "accueil":
+        await accueil(update, context)
 
 
 # ---------------------------------------------------------------------------
@@ -391,8 +540,26 @@ async def recevoir_patho(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         )
         return ConversationHandler.END
 
+    context.user_data["patho"] = choix
+    context.user_data["type_diabete"] = ""
+    if choix in PATHOS_DIABETE:
+        await repondre(update, TXT_TYPE, boutons("typ", TYPES_DIABETE))
+        return TYPE_DIAB
+    return await terminer_profil(update, context)
+
+
+async def recevoir_type(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    i = await lire_choix(update, TYPES_DIABETE)
+    if i is None:
+        return TYPE_DIAB
+    context.user_data["type_diabete"] = (
+        "" if TYPES_DIABETE[i] == "Je ne sais pas" else TYPES_DIABETE[i]
+    )
+    return await terminer_profil(update, context)
+
+
+async def terminer_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     d = context.user_data
-    d["patho"] = choix
     d["imc"] = calcul_imc(d["poids"], d["taille"])
     d["kcal"], note = calcul_calories(
         d["sexe"], d["age"], d["taille"], d["poids"],
@@ -404,10 +571,15 @@ async def recevoir_patho(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         "Votre profil est enregistré.\n\n"
         f"IMC : {d['imc']} ({categorie_imc(d['imc'])})\n"
         f"Besoin estimé : environ {d['kcal']} kcal par jour\n\n"
-        f"{CONSEILS[choix]}\n"
+        f"{CONSEILS[d['patho']]}\n"
     )
     if note:
         message += f"\n{note}\n"
+    if d["patho"] in PATHOS_DIABETE and not d["type_diabete"]:
+        message += (
+            "\nDemandez à votre médecin votre type de diabète, puis mettez à "
+            "jour votre profil pour recevoir un plan de repas.\n"
+        )
     message += f"\n{AVERTISSEMENT}"
     await repondre(update, message, menu_principal())
     return ConversationHandler.END
@@ -489,6 +661,12 @@ def construire_app(token: str) -> Application:
                     CallbackQueryHandler(recevoir_patho, pattern="^pat:"),
                     MessageHandler(texte, rappel_boutons(TXT_PATHO, "pat", PATHOS, 1, PATHO)),
                 ],
+                TYPE_DIAB: [
+                    CallbackQueryHandler(recevoir_type, pattern="^typ:"),
+                    MessageHandler(
+                        texte, rappel_boutons(TXT_TYPE, "typ", TYPES_DIABETE, 1, TYPE_DIAB)
+                    ),
+                ],
             },
             fallbacks=[
                 CallbackQueryHandler(annuler, pattern="^annuler$"),
@@ -508,7 +686,9 @@ def construire_app(token: str) -> Application:
     app.add_handler(CommandHandler("profil", afficher_profil))
     app.add_handler(CommandHandler("plan", afficher_plan))
     app.add_handler(CommandHandler("aide", afficher_aide))
-    app.add_handler(CallbackQueryHandler(bouton_menu, pattern="^(profil|plan|aide)$"))
+    app.add_handler(CallbackQueryHandler(bouton_menu, pattern="^(profil|plan|aide|accueil)$"))
+    app.add_handler(CallbackQueryHandler(liste_situations, pattern="^sits$"))
+    app.add_handler(CallbackQueryHandler(montrer_plan, pattern="^pl:"))
     # Tout autre message : on affiche le menu
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, accueil))
     return app
@@ -520,6 +700,7 @@ def main() -> None:
         raise SystemExit("La variable TELEGRAM_TOKEN est absente.")
 
     init_db()
+    log.info("%d plans de repas chargés", len(PLANS))
     app = construire_app(token)
 
     # Mode webhook si une URL publique est connue (Render la fournit dans

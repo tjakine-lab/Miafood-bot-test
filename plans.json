@@ -1,0 +1,392 @@
+[
+ {
+  "id": "PLAN-001",
+  "type": "Type 2",
+  "situation": "Jour standard",
+  "repas": {
+   "petit_dejeuner": "Bouillie de maïs non sucrée + 1 œuf dur + Thé sans sucre",
+   "collation_matin": "1 avocat ou poignée d'arachides non salées",
+   "dejeuner": "Riz brun (150g) + Poisson braisé + Légumes verts + Eau",
+   "collation_apres_midi": "1 fruit à IG bas (goyave, pomme)",
+   "diner": "Plantain vert bouilli + Gombo ou feuilles de manioc + Poulet grillé"
+  },
+  "ig": 42
+ },
+ {
+  "id": "PLAN-002",
+  "type": "Type 2",
+  "situation": "Jour festif / fête",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Œuf brouillé + Avocat",
+   "collation_matin": "Yaourt nature sans sucre",
+   "dejeuner": "Igname bouillie (100g) + Poisson sauce tomate légère + Salade de légumes",
+   "collation_apres_midi": "Poignée de noix non salées",
+   "diner": "Haricots rouges (150g) + Légumes sautés + Eau ou bissap sans sucre"
+  },
+  "ig": 38
+ },
+ {
+  "id": "PLAN-003",
+  "type": "Diabète Gestationnel",
+  "situation": "Grossesse standard",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf + lait demi-écrémé (100ml)",
+   "collation_matin": "Fruit à IG bas + 1 verre de lait",
+   "dejeuner": "Riz brun (120g) + Poulet grillé + Légumes verts variés",
+   "collation_apres_midi": "Pain complet 1 tranche + Avocat",
+   "diner": "Igname (100g) + Poisson grillé + Légumes verts"
+  },
+  "ig": 40
+ },
+ {
+  "id": "PLAN-004",
+  "type": "Type 1",
+  "situation": "Jour standard",
+  "repas": {
+   "petit_dejeuner": "Bouillie d'avoine + 1 œuf + Thé sans sucre",
+   "collation_matin": "Goyave ou pomme (1 petit fruit)",
+   "dejeuner": "Riz brun (130g) + Légumineuses + Légumes verts",
+   "collation_apres_midi": "Yaourt nature + Noix",
+   "diner": "Soupe de légumes + Poisson ou poulet + 1 petite portion féculent IG bas"
+  },
+  "ig": 39
+ },
+ {
+  "id": "PLAN-005",
+  "type": "Type 2",
+  "situation": "Jour de marché (Mboppi/Marché Central)",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + Akara (beignet haricot, 2 pièces) + Thé sans sucre",
+   "collation_matin": "1 orange ou pamplemousse",
+   "dejeuner": "Riz brun (150g) + Poisson braisé (makayabu ou bar) + Sauce gombo + Eau",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Bâton de manioc (1 pièce) + Sauce feuille de patate + Poulet grillé"
+  },
+  "ig": 44
+ },
+ {
+  "id": "PLAN-006",
+  "type": "Type 2",
+  "situation": "Weekend en famille",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Omelette 2 œufs + tomate/oignon + Café sans sucre",
+   "collation_matin": "1 pomme ou goyave",
+   "dejeuner": "Igname bouillie (120g) + Poulet DG allégé (peu de plantain frit) + Salade de légumes",
+   "collation_apres_midi": "Yaourt nature sans sucre",
+   "diner": "Haricots rouges (150g) + Légumes sautés + Bissap sans sucre"
+  },
+  "ig": 41
+ },
+ {
+  "id": "PLAN-007",
+  "type": "Type 2",
+  "situation": "Jour de pluie",
+  "repas": {
+   "petit_dejeuner": "Bouillie de maïs non sucrée + 1 œuf dur + Gingembre chaud sans sucre",
+   "collation_matin": "Banane peu mûre (petite)",
+   "dejeuner": "Foufou de manioc (120g) + Sauce ndolé + Poisson fumé + Eau",
+   "collation_apres_midi": "1 avocat (demi)",
+   "diner": "Soupe de légumes (gombo, tomate, épinard) + Poisson bouilli"
+  },
+  "ig": 43
+ },
+ {
+  "id": "PLAN-008",
+  "type": "Type 2",
+  "situation": "Jour au bureau (Douala/Yaoundé)",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Avocat + Thé sans sucre",
+   "collation_matin": "Poignée de noix de cajou",
+   "dejeuner": "Riz brun (130g) + Poisson sauce tomate légère + Légumes verts (déjeuner à emporter)",
+   "collation_apres_midi": "1 fruit à IG bas (pomme ou goyave)",
+   "diner": "Légumes sautés (haricot vert, carotte) + Œuf brouillé"
+  },
+  "ig": 40
+ },
+ {
+  "id": "PLAN-009",
+  "type": "Type 1",
+  "situation": "Jour standard avec injection",
+  "repas": {
+   "petit_dejeuner": "Bouillie d'avoine non sucrée + 1 œuf + Thé sans sucre",
+   "collation_matin": "Goyave (1 petit fruit)",
+   "dejeuner": "Riz brun (130g) + Poisson grillé + Légumes verts variés",
+   "collation_apres_midi": "Yaourt nature + quelques amandes",
+   "diner": "Igname bouillie (100g) + Poulet grillé + Haricot vert"
+  },
+  "ig": 38
+ },
+ {
+  "id": "PLAN-010",
+  "type": "Type 1",
+  "situation": "Jour d'activité physique",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf + Banane peu mûre",
+   "collation_matin": "Fruit à IG bas + eau",
+   "dejeuner": "Riz brun (150g) + Poulet grillé + Légumes verts + Eau",
+   "collation_apres_midi": "Collation glucidique légère (1 fruit) avant l'effort",
+   "diner": "Igname (100g) + Poisson + Légumes"
+  },
+  "ig": 45
+ },
+ {
+  "id": "PLAN-011",
+  "type": "Type 1",
+  "situation": "Jour de contrôle glycémique (consultation)",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Œuf bouilli + Thé sans sucre",
+   "collation_matin": "1 mandarine",
+   "dejeuner": "Riz brun (120g) + Poisson braisé + Légumes verts",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Soupe de légumes + Poulet bouilli"
+  },
+  "ig": 39
+ },
+ {
+  "id": "PLAN-012",
+  "type": "Type 1",
+  "situation": "Jour scolaire / actif (adolescent)",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf + Pain complet (petite tranche)",
+   "collation_matin": "Fruit à IG bas (pomme)",
+   "dejeuner": "Riz brun (130g) + Poisson + Légumes verts",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Igname (100g) + Poulet grillé + Légumes"
+  },
+  "ig": 40
+ },
+ {
+  "id": "PLAN-013",
+  "type": "Type 1",
+  "situation": "Jour froid / harmattan",
+  "repas": {
+   "petit_dejeuner": "Bouillie de sorgho non sucrée + 1 œuf + Gingembre chaud",
+   "collation_matin": "Orange",
+   "dejeuner": "Foufou de manioc (100g) + Sauce gombo + Poisson",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Soupe de légumes chaude + Poulet bouilli"
+  },
+  "ig": 41
+ },
+ {
+  "id": "PLAN-014",
+  "type": "Diabète Gestationnel",
+  "situation": "1er trimestre",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf + lait demi-écrémé (100ml)",
+   "collation_matin": "Fruit à IG bas + biscottes complètes",
+   "dejeuner": "Riz brun (120g) + Poulet grillé + Légumes verts variés",
+   "collation_apres_midi": "Yaourt nature + fruit",
+   "diner": "Igname (100g) + Poisson grillé + Légumes verts"
+  },
+  "ig": 39
+ },
+ {
+  "id": "PLAN-015",
+  "type": "Diabète Gestationnel",
+  "situation": "2e trimestre",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Œuf + avocat",
+   "collation_matin": "1 verre de lait + fruit à IG bas",
+   "dejeuner": "Riz brun (130g) + Poisson sauce légère + Légumes verts",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Haricots rouges (120g) + Légumes sautés"
+  },
+  "ig": 40
+ },
+ {
+  "id": "PLAN-016",
+  "type": "Diabète Gestationnel",
+  "situation": "3e trimestre",
+  "repas": {
+   "petit_dejeuner": "Bouillie d'avoine non sucrée + 1 œuf + lait",
+   "collation_matin": "Fruit à IG bas + noix",
+   "dejeuner": "Igname bouillie (100g) + Poulet grillé + Légumes verts",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Poisson braisé + Sauce feuille de patate + Petite portion foufou (80g)"
+  },
+  "ig": 38
+ },
+ {
+  "id": "PLAN-017",
+  "type": "Diabète Gestationnel",
+  "situation": "Rendez-vous prénatal",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf",
+   "collation_matin": "Fruit à IG bas",
+   "dejeuner": "Riz brun (120g) + Poisson grillé + Légumes verts",
+   "collation_apres_midi": "1 verre de lait demi-écrémé",
+   "diner": "Igname (100g) + Poulet bouilli + Légumes"
+  },
+  "ig": 39
+ },
+ {
+  "id": "PLAN-018",
+  "type": "Prédiabète",
+  "situation": "Jour standard — prévention",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf + Thé sans sucre",
+   "collation_matin": "1 fruit à IG bas",
+   "dejeuner": "Riz brun (150g) + Poisson grillé + Légumes verts",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Plantain vert bouilli + Gombo + Poulet grillé"
+  },
+  "ig": 40
+ },
+ {
+  "id": "PLAN-019",
+  "type": "Prédiabète",
+  "situation": "Jour d'effort physique léger",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Avocat + Thé sans sucre",
+   "collation_matin": "Fruit à IG bas",
+   "dejeuner": "Igname bouillie (120g) + Poulet grillé + Légumes verts",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Haricots rouges (130g) + Légumes sautés"
+  },
+  "ig": 39
+ },
+ {
+  "id": "PLAN-020",
+  "type": "Prédiabète",
+  "situation": "Jour convivial (repas entre amis)",
+  "repas": {
+   "petit_dejeuner": "Bouillie de maïs non sucrée + 1 œuf",
+   "collation_matin": "1 fruit à IG bas",
+   "dejeuner": "Riz brun (130g) + Poisson braisé + Salade de légumes",
+   "collation_apres_midi": "Poignée de noix",
+   "diner": "Eru ou Ndolé (petite portion) + Poisson + Peu de foufou"
+  },
+  "ig": 42
+ },
+ {
+  "id": "PLAN-021",
+  "type": "Type 2",
+  "situation": "Jour de fête / anniversaire",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Œuf brouillé + Avocat",
+   "collation_matin": "Yaourt nature sans sucre",
+   "dejeuner": "Riz sauté aux légumes (petite portion) + Poulet grillé + Salade",
+   "collation_apres_midi": "Fruit à IG bas au lieu du gâteau",
+   "diner": "Haricots rouges (150g) + Légumes + Eau"
+  },
+  "ig": 44
+ },
+ {
+  "id": "PLAN-022",
+  "type": "Type 2",
+  "situation": "Jour de jeûne avant analyse (glycémie à jeun)",
+  "repas": {
+   "petit_dejeuner": "Eau uniquement jusqu'au prélèvement, puis : Thé sans sucre + 1 œuf",
+   "collation_matin": "Fruit à IG bas après le prélèvement",
+   "dejeuner": "Riz brun (130g) + Poisson + Légumes verts",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Igname (100g) + Poulet grillé + Légumes"
+  },
+  "ig": 37
+ },
+ {
+  "id": "PLAN-023",
+  "type": "Type 2",
+  "situation": "Ramadan — repas de rupture (Iftar)",
+  "repas": {
+   "petit_dejeuner": "Rupture du jeûne : 3 dattes + Bouillie de mil non sucrée + Eau",
+   "collation_matin": "Fruit à IG bas",
+   "dejeuner": "Riz brun (130g) + Poulet grillé + Légumes verts (après la prière)",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Soupe de légumes + Poisson + Petite portion de foufou"
+  },
+  "ig": 43
+ },
+ {
+  "id": "PLAN-024",
+  "type": "Type 2",
+  "situation": "Jour de déplacement / voyage (Douala–Yaoundé)",
+  "repas": {
+   "petit_dejeuner": "Pain complet (1 tranche) + Œuf bouilli + Eau",
+   "collation_matin": "Arachides non salées (petit sachet)",
+   "dejeuner": "Poisson braisé (aire de repos) + Bâton de manioc (petite portion) + Légumes",
+   "collation_apres_midi": "Fruit à IG bas (orange, banane peu mûre)",
+   "diner": "Soupe de légumes + Poulet grillé"
+  },
+  "ig": 45
+ },
+ {
+  "id": "PLAN-025",
+  "type": "Type 2",
+  "situation": "Soirée grillades / soya en ville",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf",
+   "collation_matin": "Fruit à IG bas",
+   "dejeuner": "Riz brun (130g) + Poisson + Légumes verts",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Soya (brochettes grillées, 3-4 pièces) + Salade de légumes + Eau (éviter la bière)"
+  },
+  "ig": 35
+ },
+ {
+  "id": "PLAN-026",
+  "type": "Type 2",
+  "situation": "Personne âgée — jour standard",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée (tiède) + 1 œuf mollet + Thé léger sans sucre",
+   "collation_matin": "Compote de fruit à IG bas (sans sucre ajouté)",
+   "dejeuner": "Igname bien cuite (100g) + Poisson bouilli désossé + Légumes bien cuits",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Soupe de légumes mixée + Poulet bouilli effiloché"
+  },
+  "ig": 36
+ },
+ {
+  "id": "PLAN-027",
+  "type": "Type 2 + Hypertension",
+  "situation": "Jour à alimentation pauvre en sel",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée (sans sel) + 1 œuf + Thé sans sucre",
+   "collation_matin": "Fruit à IG bas",
+   "dejeuner": "Riz brun (130g) + Poisson grillé (peu salé) + Légumes verts (citron à la place du sel)",
+   "collation_apres_midi": "Poignée d'arachides non salées",
+   "diner": "Haricots rouges (130g, peu salés) + Légumes vapeur"
+  },
+  "ig": 40
+ },
+ {
+  "id": "PLAN-028",
+  "type": "Type 2",
+  "situation": "Jour de convalescence (après maladie)",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée + 1 œuf + Thé au gingembre sans sucre",
+   "collation_matin": "Fruit à IG bas mixé si besoin",
+   "dejeuner": "Riz brun bien cuit (120g) + Poisson bouilli + Légumes bien cuits",
+   "collation_apres_midi": "Yaourt nature",
+   "diner": "Soupe de légumes + Poulet bouilli"
+  },
+  "ig": 37
+ },
+ {
+  "id": "PLAN-029",
+  "type": "Type 2",
+  "situation": "Jour chaud (saison sèche)",
+  "repas": {
+   "petit_dejeuner": "Bouillie de mil non sucrée fraîche + 1 œuf + Eau",
+   "collation_matin": "Pastèque (petite portion) ou concombre",
+   "dejeuner": "Riz brun (130g) + Poisson grillé + Salade de légumes fraîche",
+   "collation_apres_midi": "Jus de bissap glacé sans sucre",
+   "diner": "Salade composée (légumes, œuf, poulet grillé) + Eau fraîche"
+  },
+  "ig": 38
+ },
+ {
+  "id": "PLAN-030",
+  "type": "Type 2",
+  "situation": "Jour riche en fibres (transit)",
+  "repas": {
+   "petit_dejeuner": "Bouillie d'avoine non sucrée + 1 œuf + Thé sans sucre",
+   "collation_matin": "Fruit à IG bas avec peau (pomme, goyave)",
+   "dejeuner": "Haricots rouges (150g) + Légumes verts + Poisson",
+   "collation_apres_midi": "Poignée de graines de courge (egusi)",
+   "diner": "Gombo + Feuilles de manioc + Poisson bouilli"
+  },
+  "ig": 34
+ }
+]

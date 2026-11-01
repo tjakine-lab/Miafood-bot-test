@@ -6,6 +6,8 @@ Nouveautés de cette version :
 - « Mon plan de repas » affiche le plan du jour, avec un choix d'autres
   situations (jour de marché, fête, harmattan, etc.)
 - les plans viennent du fichier plans.json (extrait du fichier Excel)
+- « Que manger aujourd'hui ? » : idée de déjeuner ou de dîner selon ce que la
+  personne a déjà mangé, sa région et son état de santé (moteur : repas.py)
 
 Lancement local :
     export TELEGRAM_TOKEN="ton_token"
@@ -18,7 +20,9 @@ import logging
 import os
 import re
 import sqlite3
+from datetime import date
 
+import repas
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     Application,
@@ -41,6 +45,8 @@ PLANS_PATH = os.path.join(BASE_DIR, "plans.json")
 
 # Étapes du questionnaire
 SEXE, AGE, TAILLE, POIDS, ACTIVITE, OBJECTIF, PATHO, TYPE_DIAB = range(8)
+# Étapes de « Que manger aujourd'hui ? »
+REGION, REPAS_CHOIX, MANGE = range(10, 13)
 
 # ---------------------------------------------------------------------------
 # Options proposées (boutons)
@@ -200,6 +206,10 @@ def init_db() -> None:
         colonnes = [c[1] for c in db.execute("PRAGMA table_info(profils)")]
         if "type_diabete" not in colonnes:
             db.execute("ALTER TABLE profils ADD COLUMN type_diabete TEXT")
+        db.execute(
+            "CREATE TABLE IF NOT EXISTS preferences "
+            "(user_id INTEGER PRIMARY KEY, region TEXT)"
+        )
 
 
 def sauver_profil(user_id: int, p: dict) -> None:
@@ -225,6 +235,22 @@ def lire_profil(user_id: int):
         return db.execute(
             "SELECT * FROM profils WHERE user_id = ?", (user_id,)
         ).fetchone()
+
+
+def lire_region(user_id: int):
+    with sqlite3.connect(DB_PATH) as db:
+        r = db.execute(
+            "SELECT region FROM preferences WHERE user_id = ?", (user_id,)
+        ).fetchone()
+    return r[0] if r and r[0] else None
+
+
+def sauver_region(user_id: int, region: str) -> None:
+    with sqlite3.connect(DB_PATH) as db:
+        db.execute(
+            "INSERT OR REPLACE INTO preferences (user_id, region) VALUES (?, ?)",
+            (user_id, region),
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -291,6 +317,7 @@ def menu_principal():
             [InlineKeyboardButton("Créer ou modifier mon profil", callback_data="creer")],
             [InlineKeyboardButton("Voir mon profil", callback_data="profil")],
             [InlineKeyboardButton("Mon plan de repas", callback_data="plan")],
+            [InlineKeyboardButton("Que manger aujourd'hui ?", callback_data="repas")],
             [InlineKeyboardButton("Aide", callback_data="aide")],
         ]
     )
@@ -344,6 +371,7 @@ async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     if p is None:
         await repondre(update, "Vous n'avez pas encore de profil.", menu_principal())
         return
+    region = lire_region(update.effective_user.id)
     sante = p["patho"]
     if p["type_diabete"]:
         sante += f" ({p['type_diabete']})"
@@ -354,7 +382,8 @@ async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         f"Activité : {p['activite']}\n"
         f"Objectif : {p['objectif']}\n"
         f"Situation de santé : {sante}\n"
-        f"IMC : {p['imc']} - Besoin estimé : environ {p['kcal']} kcal/jour",
+        + (f"Région : {region}\n" if region else "")
+        + f"IMC : {p['imc']} - Besoin estimé : environ {p['kcal']} kcal/jour",
         menu_principal(),
     )
 
@@ -417,8 +446,9 @@ async def montrer_plan(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def afficher_aide(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await repondre(
         update,
-        "Utilisez les boutons du menu pour créer votre profil, le consulter "
-        "ou voir votre plan de repas. Pour revenir au menu à tout moment, "
+        "Utilisez les boutons du menu pour créer votre profil, le consulter, "
+        "voir votre plan de repas ou demander une idée de repas selon ce que "
+        "vous avez déjà mangé. Pour revenir au menu à tout moment, "
         "envoyez simplement un message.\n\n" + AVERTISSEMENT,
         menu_principal(),
     )
@@ -618,6 +648,217 @@ def rappel_boutons(texte, prefixe, options, colonnes, etat):
 
 
 # ---------------------------------------------------------------------------
+# Que manger aujourd'hui ? (idée de repas pour les personnes diabétiques)
+# ---------------------------------------------------------------------------
+CHOIX_REPAS = ["Déjeuner", "Dîner"]
+TXT_REGION = (
+    "Dans quelle région du Cameroun vivez-vous ?\n"
+    "Je choisis des aliments qu'on y trouve facilement."
+)
+TXT_REPAS = "Pour quel repas voulez-vous une idée ?"
+
+
+def boutons_mange():
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("Je n'ai encore rien mangé", callback_data="rien")],
+            [InlineKeyboardButton("Annuler", callback_data="annuler")],
+        ]
+    )
+
+
+def boutons_proposition():
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("Autre proposition", callback_data="autre")],
+            [InlineKeyboardButton("Corriger ce que j'ai mangé", callback_data="corr")],
+            [InlineKeyboardButton("Changer ma région", callback_data="chreg")],
+            [InlineKeyboardButton("Menu", callback_data="accueil")],
+        ]
+    )
+
+
+def texte_question_mange(repas_nom: str) -> str:
+    return (
+        f"Qu'avez-vous mangé aujourd'hui avant ce {repas_nom.lower()} ?\n"
+        "Écrivez les aliments séparés par des virgules (par exemple : "
+        "bouillie de mil, plantain, poisson braisé, gombo)."
+    )
+
+
+def _etat_repas(context) -> dict:
+    return context.user_data.setdefault(
+        "repas", {"meal": None, "eaten": [], "inconnus": [], "essai": 0, "derniere": None}
+    )
+
+
+async def _ack(update: Update) -> None:
+    if update.callback_query:
+        try:
+            await update.callback_query.answer()
+        except Exception:  # déjà acquitté
+            pass
+
+
+def texte_proposition(prop: dict, d: dict, region: str) -> str:
+    base, prot, legumes = prop["base"], prop["proteine"], prop["legumes"]
+    lignes = [
+        f"Idée pour ce {d['meal'].lower()} (région {region}) :",
+        "",
+        f"- Base : {base['nom']} ({repas.portion_affichee(base)})",
+        f"- Protéine : {prot['nom']} ({repas.portion_affichee(prot)})",
+        "- Légumes : "
+        + " et ".join(
+            f"{repas.nom_affiche(x)} ({repas.portion_affichee(x)})" for x in legumes
+        ),
+        "- Boisson : eau",
+        "",
+        "Pourquoi ce choix :",
+    ]
+    lignes += [f"- {r}" for r in prop["raisons"]]
+    mange = [repas.ALIMENTS[i]["nom"] for i in d["eaten"] if i in repas.ALIMENTS]
+    if mange:
+        lignes += ["", "Pris en compte aujourd'hui : " + ", ".join(mange)]
+    if d["inconnus"]:
+        lignes += [
+            "",
+            "Non reconnu (ignoré) : " + ", ".join(d["inconnus"]) + ". "
+            "Utilisez « Corriger ce que j'ai mangé » pour le reformuler.",
+        ]
+    lignes += ["", AVERTISSEMENT_PLAN]
+    return "\n".join(lignes)
+
+
+async def proposer_repas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    uid = update.effective_user.id
+    p = lire_profil(uid)
+    region = lire_region(uid)
+    d = _etat_repas(context)
+    if p is None or not region or not d.get("meal"):
+        await repondre(
+            update,
+            "Je n'ai plus les informations de cette conversation. Relancez "
+            "« Que manger aujourd'hui ? ».",
+            menu_principal(),
+        )
+        return
+    mange = [repas.ALIMENTS[i] for i in d["eaten"] if i in repas.ALIMENTS]
+    graine = uid + date.today().toordinal()
+    essai, prop = d["essai"], None
+    for _ in range(8):  # on évite de répéter la proposition précédente
+        prop = repas.proposer(p["patho"], region, mange, essai, graine)
+        if prop is None or prop["signature"] != d["derniere"]:
+            break
+        essai += 1
+    d["essai"] = essai
+    if prop is None:
+        await repondre(
+            update,
+            "Je n'ai pas trouvé de combinaison adaptée. Parlez-en à un "
+            "nutritionniste.",
+            menu_principal(),
+        )
+        return
+    d["derniere"] = prop["signature"]
+    await repondre(update, texte_proposition(prop, d, region), boutons_proposition())
+
+
+async def repas_debut(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await _ack(update)
+    uid = update.effective_user.id
+    p = lire_profil(uid)
+    if p is None:
+        await repondre(update, "Créez d'abord votre profil.", menu_principal())
+        return ConversationHandler.END
+    if p["patho"] not in PATHOS_DIABETE:
+        await repondre(
+            update,
+            "Pour l'instant, cette fonction est disponible pour les personnes "
+            "diabétiques. Les autres profils arriveront bientôt.",
+            menu_principal(),
+        )
+        return ConversationHandler.END
+    context.user_data.pop("repas", None)
+    _etat_repas(context)
+    if not lire_region(uid):
+        await repondre(update, TXT_REGION, boutons("reg", repas.REGIONS, 2))
+        return REGION
+    await repondre(update, TXT_REPAS, boutons("meal", CHOIX_REPAS, 2))
+    return REPAS_CHOIX
+
+
+async def changer_region(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await _ack(update)
+    _etat_repas(context)
+    await repondre(update, TXT_REGION, boutons("reg", repas.REGIONS, 2))
+    return REGION
+
+
+async def recevoir_region(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    i = await lire_choix(update, repas.REGIONS)
+    if i is None:
+        return REGION
+    sauver_region(update.effective_user.id, repas.REGIONS[i])
+    await repondre(update, TXT_REPAS, boutons("meal", CHOIX_REPAS, 2))
+    return REPAS_CHOIX
+
+
+async def recevoir_repas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    i = await lire_choix(update, CHOIX_REPAS)
+    if i is None:
+        return REPAS_CHOIX
+    d = _etat_repas(context)
+    d.update({"meal": CHOIX_REPAS[i], "eaten": [], "inconnus": [], "essai": 0, "derniere": None})
+    await repondre(update, texte_question_mange(d["meal"]), boutons_mange())
+    return MANGE
+
+
+async def recevoir_mange(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    trouves, inconnus = repas.analyser_texte(update.message.text)
+    d = _etat_repas(context)
+    d.update(
+        {"eaten": [a["id"] for a in trouves], "inconnus": inconnus, "essai": 0, "derniere": None}
+    )
+    await proposer_repas(update, context)
+    return ConversationHandler.END
+
+
+async def rien_mange(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await _ack(update)
+    try:
+        await update.callback_query.edit_message_reply_markup(None)
+    except Exception:
+        pass
+    d = _etat_repas(context)
+    d.update({"eaten": [], "inconnus": [], "essai": 0, "derniere": None})
+    await proposer_repas(update, context)
+    return ConversationHandler.END
+
+
+async def corriger(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await _ack(update)
+    d = context.user_data.get("repas")
+    if not d or not d.get("meal"):
+        return await repas_debut(update, context)
+    await repondre(update, texte_question_mange(d["meal"]), boutons_mange())
+    return MANGE
+
+
+async def autre_proposition(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _ack(update)
+    d = context.user_data.get("repas")
+    if not d or not d.get("meal"):
+        await repondre(
+            update,
+            "Relancez « Que manger aujourd'hui ? » pour une nouvelle idée.",
+            menu_principal(),
+        )
+        return
+    d["essai"] += 1
+    await proposer_repas(update, context)
+
+
+# ---------------------------------------------------------------------------
 # Construction de l'application
 # ---------------------------------------------------------------------------
 def construire_app(token: str) -> Application:
@@ -629,6 +870,17 @@ def construire_app(token: str) -> Application:
         & ~filters.COMMAND
         & ~filters.Regex(re.compile(r"^\s*annuler\s*$", re.IGNORECASE))
     )
+
+    def fallbacks():
+        return [
+            CallbackQueryHandler(annuler, pattern="^annuler$"),
+            CommandHandler("annuler", annuler),
+            MessageHandler(
+                filters.Regex(re.compile(r"^\s*annuler\s*$", re.IGNORECASE)), annuler
+            ),
+            CommandHandler("start", start_et_fin),
+            CommandHandler("menu", start_et_fin),
+        ]
 
     app.add_handler(
         ConversationHandler(
@@ -668,15 +920,38 @@ def construire_app(token: str) -> Application:
                     ),
                 ],
             },
-            fallbacks=[
-                CallbackQueryHandler(annuler, pattern="^annuler$"),
-                CommandHandler("annuler", annuler),
-                MessageHandler(
-                    filters.Regex(re.compile(r"^\s*annuler\s*$", re.IGNORECASE)), annuler
-                ),
-                CommandHandler("start", start_et_fin),
-                CommandHandler("menu", start_et_fin),
+            fallbacks=fallbacks(),
+        )
+    )
+
+    # Que manger aujourd'hui ?
+    app.add_handler(
+        ConversationHandler(
+            entry_points=[
+                CallbackQueryHandler(repas_debut, pattern="^repas$"),
+                CommandHandler("repas", repas_debut),
+                CallbackQueryHandler(corriger, pattern="^corr$"),
+                CallbackQueryHandler(changer_region, pattern="^chreg$"),
             ],
+            states={
+                REGION: [
+                    CallbackQueryHandler(recevoir_region, pattern="^reg:"),
+                    MessageHandler(
+                        texte, rappel_boutons(TXT_REGION, "reg", repas.REGIONS, 2, REGION)
+                    ),
+                ],
+                REPAS_CHOIX: [
+                    CallbackQueryHandler(recevoir_repas, pattern="^meal:"),
+                    MessageHandler(
+                        texte, rappel_boutons(TXT_REPAS, "meal", CHOIX_REPAS, 2, REPAS_CHOIX)
+                    ),
+                ],
+                MANGE: [
+                    CallbackQueryHandler(rien_mange, pattern="^rien$"),
+                    MessageHandler(texte, recevoir_mange),
+                ],
+            },
+            fallbacks=fallbacks(),
         )
     )
 
@@ -688,6 +963,7 @@ def construire_app(token: str) -> Application:
     app.add_handler(CommandHandler("aide", afficher_aide))
     app.add_handler(CallbackQueryHandler(bouton_menu, pattern="^(profil|plan|aide|accueil)$"))
     app.add_handler(CallbackQueryHandler(liste_situations, pattern="^sits$"))
+    app.add_handler(CallbackQueryHandler(autre_proposition, pattern="^autre$"))
     app.add_handler(CallbackQueryHandler(montrer_plan, pattern="^pl:"))
     # Tout autre message : on affiche le menu
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, accueil))

@@ -1,0 +1,2152 @@
+[
+ {
+  "id": "ALI-001",
+  "nom": "Riz blanc (cuit)",
+  "cat": "Céréales",
+  "ig": 72,
+  "cg": 29,
+  "portion": "150g (assiette moyenne)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-002",
+  "nom": "Riz brun (cuit)",
+  "cat": "Céréales",
+  "ig": 50,
+  "cg": 16,
+  "portion": "150g",
+  "dispo": "Oui (marchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-003",
+  "nom": "Plantain mûr (bouilli)",
+  "cat": "Féculents",
+  "ig": 65,
+  "cg": 18,
+  "portion": "100g (1 petit plantain)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-004",
+  "nom": "Plantain vert (bouilli)",
+  "cat": "Féculents",
+  "ig": 40,
+  "cg": 11,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-005",
+  "nom": "Manioc (bouilli)",
+  "cat": "Féculents",
+  "ig": 46,
+  "cg": 12,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-006",
+  "nom": "Igname (bouillie)",
+  "cat": "Féculents",
+  "ig": 37,
+  "cg": 8,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-007",
+  "nom": "Patate douce (cuite)",
+  "cat": "Féculents",
+  "ig": 44,
+  "cg": 11,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-008",
+  "nom": "Bouillie de maïs (non sucrée)",
+  "cat": "Céréales",
+  "ig": 52,
+  "cg": 12,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-009",
+  "nom": "Pain blanc",
+  "cat": "Céréales",
+  "ig": 75,
+  "cg": 22,
+  "portion": "30g (1 tranche)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-010",
+  "nom": "Haricots rouges (cuits)",
+  "cat": "Légumineuses",
+  "ig": 29,
+  "cg": 9,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-011",
+  "nom": "Feuilles de manioc (ndolé)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-012",
+  "nom": "Gombo (cuit)",
+  "cat": "Légumes",
+  "ig": 20,
+  "cg": 2,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-013",
+  "nom": "Tomate",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-014",
+  "nom": "Oignon",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-015",
+  "nom": "Mangue",
+  "cat": "Fruits",
+  "ig": 55,
+  "cg": 8,
+  "portion": "100g (½ mangue)",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-016",
+  "nom": "Papaye",
+  "cat": "Fruits",
+  "ig": 59,
+  "cg": 7,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-017",
+  "nom": "Avocat",
+  "cat": "Fruits",
+  "ig": 10,
+  "cg": 1,
+  "portion": "½ avocat",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-018",
+  "nom": "Banane mûre",
+  "cat": "Fruits",
+  "ig": 62,
+  "cg": 12,
+  "portion": "1 petite banane",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-019",
+  "nom": "Poisson grillé",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100–150g",
+  "dispo": "Oui (tilapia, capitaine)",
+  "sale": false
+ },
+ {
+  "id": "ALI-020",
+  "nom": "Poulet grillé (sans peau)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100–150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-021",
+  "nom": "Œuf (bouilli)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1–2 œufs",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-022",
+  "nom": "Eau",
+  "cat": "Boissons",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1,5–2L/jour",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-023",
+  "nom": "Jus de fruit industriel",
+  "cat": "Boissons",
+  "ig": 75,
+  "cg": 22,
+  "portion": "À éviter",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-024",
+  "nom": "Bissap (sans sucre ajouté)",
+  "cat": "Boissons",
+  "ig": 25,
+  "cg": 2,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-025",
+  "nom": "Riz parfumé (cuit)",
+  "cat": "Céréales",
+  "ig": 68,
+  "cg": 27,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-026",
+  "nom": "Riz basmati (cuit)",
+  "cat": "Céréales",
+  "ig": 58,
+  "cg": 22,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-027",
+  "nom": "Maïs bouilli (épi)",
+  "cat": "Céréales",
+  "ig": 52,
+  "cg": 15,
+  "portion": "1 épi moyen (100g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-028",
+  "nom": "Maïs grillé (épi)",
+  "cat": "Céréales",
+  "ig": 55,
+  "cg": 16,
+  "portion": "1 épi moyen (100g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-029",
+  "nom": "Farine de maïs (bouillie / fufu corn)",
+  "cat": "Céréales",
+  "ig": 68,
+  "cg": 24,
+  "portion": "200g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-030",
+  "nom": "Couscous de maïs (« fufu »)",
+  "cat": "Céréales",
+  "ig": 70,
+  "cg": 25,
+  "portion": "200g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-031",
+  "nom": "Bouillie de mil (non sucrée)",
+  "cat": "Céréales",
+  "ig": 50,
+  "cg": 11,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-032",
+  "nom": "Bouillie de sorgho (non sucrée)",
+  "cat": "Céréales",
+  "ig": 48,
+  "cg": 10,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-033",
+  "nom": "Fonio (cuit)",
+  "cat": "Céréales",
+  "ig": 45,
+  "cg": 12,
+  "portion": "150g",
+  "dispo": "Oui (marchés spécialisés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-034",
+  "nom": "Boulgour de blé (cuit)",
+  "cat": "Céréales",
+  "ig": 48,
+  "cg": 12,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-035",
+  "nom": "Avoine (porridge, non sucré)",
+  "cat": "Céréales",
+  "ig": 55,
+  "cg": 13,
+  "portion": "200g",
+  "dispo": "Oui (importé)",
+  "sale": false
+ },
+ {
+  "id": "ALI-036",
+  "nom": "Pain complet",
+  "cat": "Céréales",
+  "ig": 58,
+  "cg": 14,
+  "portion": "30g (1 tranche)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-037",
+  "nom": "Spaghetti (cuit al dente)",
+  "cat": "Céréales",
+  "ig": 49,
+  "cg": 18,
+  "portion": "180g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-038",
+  "nom": "Pâtes complètes (cuites)",
+  "cat": "Céréales",
+  "ig": 42,
+  "cg": 15,
+  "portion": "180g",
+  "dispo": "Oui (supermarchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-039",
+  "nom": "Biscuits secs (type petit-beurre)",
+  "cat": "Céréales",
+  "ig": 70,
+  "cg": 17,
+  "portion": "30g (3 biscuits)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-040",
+  "nom": "Corn flakes (sans sucre ajouté)",
+  "cat": "Céréales",
+  "ig": 81,
+  "cg": 21,
+  "portion": "30g",
+  "dispo": "Oui (supermarchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-041",
+  "nom": "Riz cassé (cuit)",
+  "cat": "Céréales",
+  "ig": 74,
+  "cg": 30,
+  "portion": "150g",
+  "dispo": "Oui (marchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-042",
+  "nom": "Plantain frit (alloco / dodo)",
+  "cat": "Féculents",
+  "ig": 71,
+  "cg": 23,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-043",
+  "nom": "Chips de plantain (industriel)",
+  "cat": "Féculents",
+  "ig": 74,
+  "cg": 20,
+  "portion": "30g (petit sachet)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-044",
+  "nom": "Plantain grillé (braisé)",
+  "cat": "Féculents",
+  "ig": 55,
+  "cg": 15,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-045",
+  "nom": "Manioc frit",
+  "cat": "Féculents",
+  "ig": 59,
+  "cg": 16,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-046",
+  "nom": "Bâton de manioc (miondo/bobolo)",
+  "cat": "Féculents",
+  "ig": 58,
+  "cg": 15,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-047",
+  "nom": "Garri (semoule de manioc, réhydraté)",
+  "cat": "Féculents",
+  "ig": 56,
+  "cg": 14,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-048",
+  "nom": "Tapioca (perles de manioc, cuit)",
+  "cat": "Féculents",
+  "ig": 70,
+  "cg": 21,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-049",
+  "nom": "Foufou de manioc (fufu)",
+  "cat": "Féculents",
+  "ig": 61,
+  "cg": 17,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-050",
+  "nom": "Igname pilée",
+  "cat": "Féculents",
+  "ig": 55,
+  "cg": 15,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-051",
+  "nom": "Igname frite",
+  "cat": "Féculents",
+  "ig": 65,
+  "cg": 18,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-052",
+  "nom": "Pomme de terre bouillie",
+  "cat": "Féculents",
+  "ig": 78,
+  "cg": 20,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-053",
+  "nom": "Pomme de terre frite (frites)",
+  "cat": "Féculents",
+  "ig": 75,
+  "cg": 22,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-054",
+  "nom": "Macabo / Taro (bouilli)",
+  "cat": "Féculents",
+  "ig": 45,
+  "cg": 12,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-055",
+  "nom": "Gari au lait (mets rapide)",
+  "cat": "Féculents",
+  "ig": 62,
+  "cg": 18,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-056",
+  "nom": "Kwacoco (pâte de macabo)",
+  "cat": "Féculents",
+  "ig": 50,
+  "cg": 13,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-057",
+  "nom": "Haricots blancs (cuits)",
+  "cat": "Légumineuses",
+  "ig": 31,
+  "cg": 9,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-058",
+  "nom": "Niébé / pois black-eye (cuit)",
+  "cat": "Légumineuses",
+  "ig": 33,
+  "cg": 10,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-059",
+  "nom": "Pois chiches (cuits)",
+  "cat": "Légumineuses",
+  "ig": 28,
+  "cg": 8,
+  "portion": "150g",
+  "dispo": "Oui (marchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-060",
+  "nom": "Lentilles (cuites)",
+  "cat": "Légumineuses",
+  "ig": 29,
+  "cg": 8,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-061",
+  "nom": "Soja bouilli (graines)",
+  "cat": "Légumineuses",
+  "ig": 18,
+  "cg": 4,
+  "portion": "150g",
+  "dispo": "Oui (marchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-062",
+  "nom": "Farine de soja",
+  "cat": "Légumineuses",
+  "ig": 25,
+  "cg": 5,
+  "portion": "50g",
+  "dispo": "Oui (marchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-063",
+  "nom": "Pois cajan / pois d'Angole (cuit)",
+  "cat": "Légumineuses",
+  "ig": 35,
+  "cg": 10,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-064",
+  "nom": "Arachide bouillie",
+  "cat": "Légumineuses",
+  "ig": 14,
+  "cg": 2,
+  "portion": "50g (petite poignée)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-065",
+  "nom": "Arachide grillée (sans sel ajouté)",
+  "cat": "Légumineuses",
+  "ig": 14,
+  "cg": 2,
+  "portion": "30g (petite poignée)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-066",
+  "nom": "Houmous (purée de pois chiches)",
+  "cat": "Légumineuses",
+  "ig": 25,
+  "cg": 6,
+  "portion": "50g",
+  "dispo": "Oui (supermarchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-067",
+  "nom": "Folon (feuilles d'amarante)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-068",
+  "nom": "Okok / Eru (feuilles, cru avant cuisson)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-069",
+  "nom": "Ndolé (feuilles amères, crues)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-070",
+  "nom": "Épinard (cuit)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-071",
+  "nom": "Feuilles de moringa (cuites)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-072",
+  "nom": "Feuilles de baobab (cuites)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-073",
+  "nom": "Gombo frais (cuit)",
+  "cat": "Légumes",
+  "ig": 20,
+  "cg": 2,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-074",
+  "nom": "Gombo séché (poudre, cuisiné)",
+  "cat": "Légumes",
+  "ig": 22,
+  "cg": 2,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-075",
+  "nom": "Crin-crin / corète potagère (cuit)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-076",
+  "nom": "Njama njama / morelle noire (cuite)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-077",
+  "nom": "Feuilles de patate douce (cuites)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-078",
+  "nom": "Feuilles de taro (cuites)",
+  "cat": "Légumes verts",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-079",
+  "nom": "Poivron vert / rouge",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-080",
+  "nom": "Piment frais",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-081",
+  "nom": "Piment séché (poudre)",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-082",
+  "nom": "Carotte (crue)",
+  "cat": "Légumes",
+  "ig": 20,
+  "cg": 2,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-083",
+  "nom": "Carotte (cuite)",
+  "cat": "Légumes",
+  "ig": 39,
+  "cg": 3,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-084",
+  "nom": "Chou blanc (cuit)",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-085",
+  "nom": "Concombre",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-086",
+  "nom": "Aubergine africaine / garden egg",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-087",
+  "nom": "Courgette (cuite)",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 1,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-088",
+  "nom": "Laitue",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Libre",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-089",
+  "nom": "Haricot vert (cuit)",
+  "cat": "Légumes",
+  "ig": 30,
+  "cg": 3,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-090",
+  "nom": "Céleri",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Libre",
+  "dispo": "Oui (marchés urbains)",
+  "sale": false
+ },
+ {
+  "id": "ALI-091",
+  "nom": "Mangue verte",
+  "cat": "Fruits",
+  "ig": 41,
+  "cg": 5,
+  "portion": "100g",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-092",
+  "nom": "Papaye mûre",
+  "cat": "Fruits",
+  "ig": 59,
+  "cg": 7,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-093",
+  "nom": "Orange",
+  "cat": "Fruits",
+  "ig": 43,
+  "cg": 5,
+  "portion": "1 orange moyenne (130g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-094",
+  "nom": "Pamplemousse",
+  "cat": "Fruits",
+  "ig": 25,
+  "cg": 3,
+  "portion": "½ fruit (150g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-095",
+  "nom": "Ananas frais",
+  "cat": "Fruits",
+  "ig": 59,
+  "cg": 7,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-096",
+  "nom": "Goyave",
+  "cat": "Fruits",
+  "ig": 24,
+  "cg": 3,
+  "portion": "1 fruit moyen (100g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-097",
+  "nom": "Pastèque",
+  "cat": "Fruits",
+  "ig": 72,
+  "cg": 4,
+  "portion": "150g",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-098",
+  "nom": "Safou / prune africaine (cuite)",
+  "cat": "Fruits",
+  "ig": 30,
+  "cg": 5,
+  "portion": "5 fruits (50g)",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-099",
+  "nom": "Corossol",
+  "cat": "Fruits",
+  "ig": 45,
+  "cg": 7,
+  "portion": "100g",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-100",
+  "nom": "Fruit de la passion",
+  "cat": "Fruits",
+  "ig": 30,
+  "cg": 4,
+  "portion": "1 fruit (30g pulpe)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-101",
+  "nom": "Citron",
+  "cat": "Fruits",
+  "ig": 20,
+  "cg": 1,
+  "portion": "1 fruit (condiment/jus)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-102",
+  "nom": "Mandarine",
+  "cat": "Fruits",
+  "ig": 30,
+  "cg": 3,
+  "portion": "1 fruit moyen (80g)",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-103",
+  "nom": "Noix de coco (chair fraîche)",
+  "cat": "Fruits",
+  "ig": 45,
+  "cg": 4,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-104",
+  "nom": "Tamarin (pulpe)",
+  "cat": "Fruits",
+  "ig": 35,
+  "cg": 5,
+  "portion": "20g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-105",
+  "nom": "Raisin",
+  "cat": "Fruits",
+  "ig": 53,
+  "cg": 8,
+  "portion": "80g (petite grappe)",
+  "dispo": "Oui (importé)",
+  "sale": false
+ },
+ {
+  "id": "ALI-106",
+  "nom": "Pomme",
+  "cat": "Fruits",
+  "ig": 38,
+  "cg": 6,
+  "portion": "1 fruit moyen (120g)",
+  "dispo": "Oui (importé)",
+  "sale": false
+ },
+ {
+  "id": "ALI-107",
+  "nom": "Datte séchée",
+  "cat": "Fruits",
+  "ig": 62,
+  "cg": 18,
+  "portion": "20g (2–3 dattes)",
+  "dispo": "Oui (marchés)",
+  "sale": false
+ },
+ {
+  "id": "ALI-108",
+  "nom": "Kola (noix de kola)",
+  "cat": "Fruits",
+  "ig": 45,
+  "cg": 6,
+  "portion": "1 noix (10g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-109",
+  "nom": "Prune Kaki / Nkoo",
+  "cat": "Fruits",
+  "ig": 40,
+  "cg": 6,
+  "portion": "1 fruit (80g)",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-110",
+  "nom": "Jujube (dattes du désert)",
+  "cat": "Fruits",
+  "ig": 50,
+  "cg": 6,
+  "portion": "50g",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-111",
+  "nom": "Litchi",
+  "cat": "Fruits",
+  "ig": 57,
+  "cg": 7,
+  "portion": "5 fruits (80g)",
+  "dispo": "Oui (saison, importé)",
+  "sale": false
+ },
+ {
+  "id": "ALI-112",
+  "nom": "Melon",
+  "cat": "Fruits",
+  "ig": 65,
+  "cg": 4,
+  "portion": "150g",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-113",
+  "nom": "Citron vert",
+  "cat": "Fruits",
+  "ig": 20,
+  "cg": 1,
+  "portion": "1 fruit (condiment/jus)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-114",
+  "nom": "Banane plantain mûre (grillée)",
+  "cat": "Fruits",
+  "ig": 65,
+  "cg": 18,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-115",
+  "nom": "Cerises (importées)",
+  "cat": "Fruits",
+  "ig": 22,
+  "cg": 3,
+  "portion": "80g",
+  "dispo": "Oui (supermarchés, rare)",
+  "sale": false
+ },
+ {
+  "id": "ALI-116",
+  "nom": "Poisson fumé",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "80–100g",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-117",
+  "nom": "Poisson bouilli",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100–150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-118",
+  "nom": "Tilapia frit",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-119",
+  "nom": "Maquereau grillé",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-120",
+  "nom": "Sardine (en conserve, égouttée)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-121",
+  "nom": "Crevettes (cuites)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "80g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-122",
+  "nom": "Escargots (achatines, cuits)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "80g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-123",
+  "nom": "Chenilles comestibles (grillées)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "50g",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-124",
+  "nom": "Viande de bœuf grillée (maigre)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-125",
+  "nom": "Viande de bœuf bouillie",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-126",
+  "nom": "Porc grillé",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-127",
+  "nom": "Mouton grillé",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-128",
+  "nom": "Chèvre (viande, bouillie)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-129",
+  "nom": "Poulet « bicyclette » (grillé)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100–150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-130",
+  "nom": "Œuf frit",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1–2 œufs",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-131",
+  "nom": "Œuf brouillé",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1–2 œufs",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-132",
+  "nom": "Fromage local (type fromage peul)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 3,
+  "portion": "30g",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-133",
+  "nom": "Lait de vache entier",
+  "cat": "Protéines",
+  "ig": 30,
+  "cg": 5,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-134",
+  "nom": "Yaourt nature (non sucré)",
+  "cat": "Protéines",
+  "ig": 35,
+  "cg": 4,
+  "portion": "125g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-135",
+  "nom": "Lait en poudre (reconstitué)",
+  "cat": "Protéines",
+  "ig": 30,
+  "cg": 5,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-136",
+  "nom": "Noix de cajou",
+  "cat": "Noix et graines",
+  "ig": 22,
+  "cg": 3,
+  "portion": "30g (petite poignée)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-137",
+  "nom": "Graines de courge (egusi, crues)",
+  "cat": "Noix et graines",
+  "ig": 25,
+  "cg": 2,
+  "portion": "30g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-138",
+  "nom": "Noix de palme (pulpe, cuite)",
+  "cat": "Noix et graines",
+  "ig": 35,
+  "cg": 5,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-139",
+  "nom": "Amande",
+  "cat": "Noix et graines",
+  "ig": 15,
+  "cg": 2,
+  "portion": "30g (petite poignée)",
+  "dispo": "Oui (importé)",
+  "sale": false
+ },
+ {
+  "id": "ALI-140",
+  "nom": "Pistache",
+  "cat": "Noix et graines",
+  "ig": 15,
+  "cg": 2,
+  "portion": "30g (petite poignée)",
+  "dispo": "Oui (importé)",
+  "sale": false
+ },
+ {
+  "id": "ALI-141",
+  "nom": "Graines de tournesol",
+  "cat": "Noix et graines",
+  "ig": 20,
+  "cg": 2,
+  "portion": "30g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-142",
+  "nom": "Njangsa (graines, condiment)",
+  "cat": "Noix et graines",
+  "ig": 20,
+  "cg": 1,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-143",
+  "nom": "Bissap sucré (industriel)",
+  "cat": "Boissons",
+  "ig": 65,
+  "cg": 16,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-144",
+  "nom": "Jus de gingembre (sans sucre)",
+  "cat": "Boissons",
+  "ig": 20,
+  "cg": 2,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-145",
+  "nom": "Jus d'ananas frais (sans sucre)",
+  "cat": "Boissons",
+  "ig": 46,
+  "cg": 12,
+  "portion": "150ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-146",
+  "nom": "Jus de tamarin (sans sucre)",
+  "cat": "Boissons",
+  "ig": 35,
+  "cg": 8,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-147",
+  "nom": "Vin de palme",
+  "cat": "Boissons",
+  "ig": 30,
+  "cg": 6,
+  "portion": "150ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-148",
+  "nom": "Bière",
+  "cat": "Boissons",
+  "ig": 45,
+  "cg": 8,
+  "portion": "330ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-149",
+  "nom": "Café noir (sans sucre)",
+  "cat": "Boissons",
+  "ig": 0,
+  "cg": 0,
+  "portion": "150ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-150",
+  "nom": "Thé (sans sucre)",
+  "cat": "Boissons",
+  "ig": 0,
+  "cg": 0,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-151",
+  "nom": "Kossam (lait fermenté peul)",
+  "cat": "Boissons",
+  "ig": 32,
+  "cg": 5,
+  "portion": "200ml",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-152",
+  "nom": "Jus de corossol (sans sucre)",
+  "cat": "Boissons",
+  "ig": 40,
+  "cg": 8,
+  "portion": "150ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-153",
+  "nom": "Citronnade (sans sucre)",
+  "cat": "Boissons",
+  "ig": 20,
+  "cg": 2,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-154",
+  "nom": "Boisson gazeuse sucrée",
+  "cat": "Boissons",
+  "ig": 63,
+  "cg": 16,
+  "portion": "330ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-155",
+  "nom": "Beignets de haricot (accra/koki frit)",
+  "cat": "Plats traditionnels",
+  "ig": 60,
+  "cg": 14,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-156",
+  "nom": "Puff-puff",
+  "cat": "Plats traditionnels",
+  "ig": 75,
+  "cg": 20,
+  "portion": "2 pièces (60g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-157",
+  "nom": "Chin chin",
+  "cat": "Plats traditionnels",
+  "ig": 70,
+  "cg": 19,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-158",
+  "nom": "Croquettes de poisson",
+  "cat": "Plats traditionnels",
+  "ig": 55,
+  "cg": 14,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-159",
+  "nom": "Samosa (viande ou légumes)",
+  "cat": "Plats traditionnels",
+  "ig": 58,
+  "cg": 15,
+  "portion": "1 pièce (60g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-160",
+  "nom": "Brochettes de bœuf (suya)",
+  "cat": "Plats traditionnels",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-161",
+  "nom": "N'dolè (plat complet)",
+  "cat": "Plats traditionnels",
+  "ig": 30,
+  "cg": 8,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-162",
+  "nom": "Eru (plat complet)",
+  "cat": "Plats traditionnels",
+  "ig": 30,
+  "cg": 8,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-163",
+  "nom": "Koki (gâteau de haricot vapeur)",
+  "cat": "Plats traditionnels",
+  "ig": 35,
+  "cg": 10,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-164",
+  "nom": "Achu (pâte de taro et sauce jaune)",
+  "cat": "Plats traditionnels",
+  "ig": 55,
+  "cg": 20,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-165",
+  "nom": "Kati-kati / Sanga (plantain et légumes)",
+  "cat": "Plats traditionnels",
+  "ig": 50,
+  "cg": 15,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-166",
+  "nom": "Nkui (sauce gluante à la viande)",
+  "cat": "Plats traditionnels",
+  "ig": 40,
+  "cg": 10,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-167",
+  "nom": "Kondre de plantain",
+  "cat": "Plats traditionnels",
+  "ig": 60,
+  "cg": 20,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-168",
+  "nom": "Mbongo tchobi (sauce noire, poisson)",
+  "cat": "Plats traditionnels",
+  "ig": 25,
+  "cg": 6,
+  "portion": "1 portion (200g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-169",
+  "nom": "Taro sauce jaune",
+  "cat": "Plats traditionnels",
+  "ig": 55,
+  "cg": 18,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-170",
+  "nom": "Ekwang (taro râpé aux feuilles)",
+  "cat": "Plats traditionnels",
+  "ig": 45,
+  "cg": 14,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-171",
+  "nom": "Water fufu (manioc fermenté)",
+  "cat": "Plats traditionnels",
+  "ig": 61,
+  "cg": 17,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-172",
+  "nom": "Okok (plat complet aux feuilles)",
+  "cat": "Plats traditionnels",
+  "ig": 30,
+  "cg": 8,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-173",
+  "nom": "Soya (brochette épicée)",
+  "cat": "Plats traditionnels",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-174",
+  "nom": "Beignets de banane",
+  "cat": "Plats traditionnels",
+  "ig": 68,
+  "cg": 18,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-175",
+  "nom": "Bâton de manioc sauce arachide",
+  "cat": "Plats traditionnels",
+  "ig": 60,
+  "cg": 20,
+  "portion": "1 portion (250g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-176",
+  "nom": "Riz sauté aux légumes",
+  "cat": "Plats traditionnels",
+  "ig": 65,
+  "cg": 25,
+  "portion": "200g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-177",
+  "nom": "Riz gras (jollof rice)",
+  "cat": "Plats traditionnels",
+  "ig": 68,
+  "cg": 28,
+  "portion": "200g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-178",
+  "nom": "Attiéké (semoule de manioc fermentée)",
+  "cat": "Plats traditionnels",
+  "ig": 60,
+  "cg": 18,
+  "portion": "150g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-179",
+  "nom": "Sandwich pain-omelette",
+  "cat": "Plats traditionnels",
+  "ig": 65,
+  "cg": 20,
+  "portion": "1 sandwich",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-180",
+  "nom": "Gingembre frais",
+  "cat": "Condiments",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-181",
+  "nom": "Ail",
+  "cat": "Condiments",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-182",
+  "nom": "Huile de palme",
+  "cat": "Matières grasses",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1 cuillère à soupe (15ml)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-183",
+  "nom": "Huile d'arachide",
+  "cat": "Matières grasses",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1 cuillère à soupe (15ml)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-184",
+  "nom": "Huile végétale (tournesol/soja)",
+  "cat": "Matières grasses",
+  "ig": 0,
+  "cg": 0,
+  "portion": "1 cuillère à soupe (15ml)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-185",
+  "nom": "Sel",
+  "cat": "Condiments",
+  "ig": 0,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-186",
+  "nom": "Sucre blanc",
+  "cat": "Condiments",
+  "ig": 100,
+  "cg": 10,
+  "portion": "1 cuillère à café (5g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-187",
+  "nom": "Miel",
+  "cat": "Condiments",
+  "ig": 61,
+  "cg": 12,
+  "portion": "1 cuillère à café (5g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-188",
+  "nom": "Cube Maggi / bouillon",
+  "cat": "Condiments",
+  "ig": 0,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-189",
+  "nom": "Pâte d'arachide (peanut butter)",
+  "cat": "Condiments",
+  "ig": 14,
+  "cg": 3,
+  "portion": "1 cuillère à soupe (15g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-190",
+  "nom": "Couscous de tapioca (Nord Cameroun)",
+  "cat": "Céréales",
+  "ig": 65,
+  "cg": 20,
+  "portion": "150g",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-191",
+  "nom": "Bouillie de sorgho sucrée",
+  "cat": "Céréales",
+  "ig": 62,
+  "cg": 16,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-192",
+  "nom": "Waragashi / fromage peul frit",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 4,
+  "portion": "50g",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-193",
+  "nom": "Poisson séché",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": true
+ },
+ {
+  "id": "ALI-194",
+  "nom": "Crabe (cuit)",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "100g",
+  "dispo": "Oui (zones côtières)",
+  "sale": false
+ },
+ {
+  "id": "ALI-195",
+  "nom": "Huîtres",
+  "cat": "Protéines",
+  "ig": 0,
+  "cg": 0,
+  "portion": "80g",
+  "dispo": "Oui (zones côtières)",
+  "sale": false
+ },
+ {
+  "id": "ALI-196",
+  "nom": "Patate douce grillée (braisée)",
+  "cat": "Féculents",
+  "ig": 46,
+  "cg": 12,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-197",
+  "nom": "Courge / citrouille (cuite)",
+  "cat": "Légumes",
+  "ig": 65,
+  "cg": 4,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-198",
+  "nom": "Champignons (cuits)",
+  "cat": "Légumes",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Libre",
+  "dispo": "Oui (saison)",
+  "sale": false
+ },
+ {
+  "id": "ALI-199",
+  "nom": "Ndjanssang en sauce (plat)",
+  "cat": "Plats traditionnels",
+  "ig": 25,
+  "cg": 6,
+  "portion": "1 portion (200g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-200",
+  "nom": "Bâtons de manioc grillés",
+  "cat": "Féculents",
+  "ig": 58,
+  "cg": 15,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-201",
+  "nom": "Folere / oseille de Guinée (boisson, sans sucre)",
+  "cat": "Boissons",
+  "ig": 22,
+  "cg": 2,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-202",
+  "nom": "Beignets soya (galettes de soja frites)",
+  "cat": "Plats traditionnels",
+  "ig": 58,
+  "cg": 13,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-203",
+  "nom": "Gâteau (cake maison, sucré)",
+  "cat": "Plats traditionnels",
+  "ig": 70,
+  "cg": 22,
+  "portion": "1 part (60g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-204",
+  "nom": "Croissant",
+  "cat": "Céréales",
+  "ig": 67,
+  "cg": 16,
+  "portion": "1 pièce (50g)",
+  "dispo": "Oui (boulangeries urbaines)",
+  "sale": false
+ },
+ {
+  "id": "ALI-205",
+  "nom": "Beignet de pomme de terre",
+  "cat": "Féculents",
+  "ig": 74,
+  "cg": 18,
+  "portion": "100g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-206",
+  "nom": "Banane plantain séchée (chips maison, sans huile)",
+  "cat": "Féculents",
+  "ig": 65,
+  "cg": 17,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-207",
+  "nom": "Sauce gombo (plat complet)",
+  "cat": "Plats traditionnels",
+  "ig": 25,
+  "cg": 6,
+  "portion": "1 portion (200g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-208",
+  "nom": "Sauce feuille de patate (plat complet)",
+  "cat": "Plats traditionnels",
+  "ig": 25,
+  "cg": 6,
+  "portion": "1 portion (200g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-209",
+  "nom": "Poulet DG (plat complet)",
+  "cat": "Plats traditionnels",
+  "ig": 60,
+  "cg": 24,
+  "portion": "1 portion (300g)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-210",
+  "nom": "Nkuinkuin (feuilles condimentaires, sauce)",
+  "cat": "Plats traditionnels",
+  "ig": 20,
+  "cg": 4,
+  "portion": "1 portion (200g)",
+  "dispo": "Oui (Ouest Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-211",
+  "nom": "Farine de blé (galette non sucrée)",
+  "cat": "Céréales",
+  "ig": 70,
+  "cg": 18,
+  "portion": "50g",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-212",
+  "nom": "Jus de bissap glacé sans sucre",
+  "cat": "Boissons",
+  "ig": 22,
+  "cg": 2,
+  "portion": "200ml",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-213",
+  "nom": "Noix de karité (amande, rare en alimentation)",
+  "cat": "Noix et graines",
+  "ig": 15,
+  "cg": 1,
+  "portion": "10g",
+  "dispo": "Oui (Nord Cameroun)",
+  "sale": false
+ },
+ {
+  "id": "ALI-214",
+  "nom": "Poivre noir",
+  "cat": "Condiments",
+  "ig": 15,
+  "cg": 0,
+  "portion": "Petite quantité (condiment)",
+  "dispo": "Oui",
+  "sale": false
+ },
+ {
+  "id": "ALI-215",
+  "nom": "Vinaigre",
+  "cat": "Condiments",
+  "ig": 5,
+  "cg": 0,
+  "portion": "1 cuillère à soupe (15ml)",
+  "dispo": "Oui",
+  "sale": false
+ }
+]

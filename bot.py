@@ -6,6 +6,8 @@ Nouveautés de cette version :
 - « Mon plan de repas » affiche le plan du jour, avec un choix d'autres
   situations (jour de marché, fête, harmattan, etc.)
 - les plans viennent du fichier plans.json (extrait du fichier Excel)
+- mémoire permanente (db.py), prénom, accueil personnalisé, code d'invitation
+  (variable CODE_TEST), bouton d'avis, suppression des données
 - « Que manger aujourd'hui ? » : idée de déjeuner ou de dîner selon ce que la
   personne a déjà mangé, sa région et son état de santé (moteur : repas.py)
 
@@ -19,13 +21,14 @@ import json
 import logging
 import os
 import re
-import sqlite3
 from datetime import date
 
+import db
 import repas
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     Application,
+    ApplicationHandlerStop,
     CallbackQueryHandler,
     CommandHandler,
     ContextTypes,
@@ -37,16 +40,27 @@ from telegram.ext import (
 logging.basicConfig(
     format="%(asctime)s %(name)s %(levelname)s %(message)s", level=logging.INFO
 )
+# Les bibliothèques réseau écrivent l'adresse complète des requêtes (qui contient
+# le token Telegram) : on les réduit au silence pour ne rien divulguer dans les logs.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 log = logging.getLogger("miafood")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.environ.get("DB_PATH", "miafood.db")
+# Code d'invitation (facultatif) et identifiant de l'administrateur
+CODE_TEST = os.environ.get("CODE_TEST", "").strip()
+try:
+    ADMIN_ID = int(os.environ.get("ADMIN_ID", "0").strip() or 0)
+except ValueError:
+    ADMIN_ID = 0
 PLANS_PATH = os.path.join(BASE_DIR, "plans.json")
 
 # Étapes du questionnaire
 SEXE, AGE, TAILLE, POIDS, ACTIVITE, OBJECTIF, PATHO, TYPE_DIAB = range(8)
 # Étapes de « Que manger aujourd'hui ? »
 REGION, REPAS_CHOIX, MANGE = range(10, 13)
+# Prénom et avis
+PRENOM, AVIS = 20, 21
 
 # ---------------------------------------------------------------------------
 # Options proposées (boutons)
@@ -188,69 +202,13 @@ def texte_plan(pl: dict, p) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Base de données
+# Base de données (voir db.py : Postgres si DATABASE_URL existe, sinon SQLite)
 # ---------------------------------------------------------------------------
-def init_db() -> None:
-    with sqlite3.connect(DB_PATH) as db:
-        db.execute(
-            """
-            CREATE TABLE IF NOT EXISTS profils (
-                user_id INTEGER PRIMARY KEY,
-                sexe TEXT, age INTEGER, taille REAL, poids REAL,
-                activite TEXT, objectif TEXT, patho TEXT,
-                imc REAL, kcal INTEGER, type_diabete TEXT
-            )
-            """
-        )
-        # Mise à jour d'une base créée par une version précédente
-        colonnes = [c[1] for c in db.execute("PRAGMA table_info(profils)")]
-        if "type_diabete" not in colonnes:
-            db.execute("ALTER TABLE profils ADD COLUMN type_diabete TEXT")
-        db.execute(
-            "CREATE TABLE IF NOT EXISTS preferences "
-            "(user_id INTEGER PRIMARY KEY, region TEXT)"
-        )
-
-
-def sauver_profil(user_id: int, p: dict) -> None:
-    with sqlite3.connect(DB_PATH) as db:
-        db.execute(
-            """
-            INSERT OR REPLACE INTO profils
-            (user_id, sexe, age, taille, poids, activite, objectif, patho,
-             imc, kcal, type_diabete)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                user_id, p["sexe"], p["age"], p["taille"], p["poids"],
-                p["activite"], p["objectif"], p["patho"], p["imc"], p["kcal"],
-                p.get("type_diabete", ""),
-            ),
-        )
-
-
-def lire_profil(user_id: int):
-    with sqlite3.connect(DB_PATH) as db:
-        db.row_factory = sqlite3.Row
-        return db.execute(
-            "SELECT * FROM profils WHERE user_id = ?", (user_id,)
-        ).fetchone()
-
-
-def lire_region(user_id: int):
-    with sqlite3.connect(DB_PATH) as db:
-        r = db.execute(
-            "SELECT region FROM preferences WHERE user_id = ?", (user_id,)
-        ).fetchone()
-    return r[0] if r and r[0] else None
-
-
-def sauver_region(user_id: int, region: str) -> None:
-    with sqlite3.connect(DB_PATH) as db:
-        db.execute(
-            "INSERT OR REPLACE INTO preferences (user_id, region) VALUES (?, ?)",
-            (user_id, region),
-        )
+init_db = db.init_db
+lire_profil = db.lire_profil
+sauver_profil = db.sauver_profil
+lire_region = db.lire_region
+sauver_region = db.sauver_region
 
 
 # ---------------------------------------------------------------------------
@@ -318,7 +276,17 @@ def menu_principal():
             [InlineKeyboardButton("Voir mon profil", callback_data="profil")],
             [InlineKeyboardButton("Mon plan de repas", callback_data="plan")],
             [InlineKeyboardButton("Que manger aujourd'hui ?", callback_data="repas")],
+            [InlineKeyboardButton("Donner mon avis", callback_data="avis")],
             [InlineKeyboardButton("Aide", callback_data="aide")],
+        ]
+    )
+
+
+def boutons_profil():
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("Supprimer mes données", callback_data="suppr")],
+            [InlineKeyboardButton("Menu", callback_data="accueil")],
         ]
     )
 
@@ -363,7 +331,13 @@ def nombre(texte: str):
 # Accueil, profil, plan de repas (sans commandes à taper)
 # ---------------------------------------------------------------------------
 async def accueil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await repondre(update, ACCUEIL, menu_principal())
+    uid = update.effective_user.id
+    prenom = db.lire_prenom(uid)
+    if prenom and lire_profil(uid):
+        texte = f"Bonjour {prenom}, content de vous revoir.\n\nQue voulez-vous faire ?"
+    else:
+        texte = ACCUEIL
+    await repondre(update, texte, menu_principal())
 
 
 async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -377,14 +351,14 @@ async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         sante += f" ({p['type_diabete']})"
     await repondre(
         update,
-        "Votre profil :\n"
-        f"{p['sexe']}, {p['age']} ans, {p['taille']:.0f} cm, {p['poids']:.1f} kg\n"
+        (f"Profil de {p['prenom']} :\n" if p["prenom"] else "Votre profil :\n")
+        + f"{p['sexe']}, {p['age']} ans, {p['taille']:.0f} cm, {p['poids']:.1f} kg\n"
         f"Activité : {p['activite']}\n"
         f"Objectif : {p['objectif']}\n"
         f"Situation de santé : {sante}\n"
         + (f"Région : {region}\n" if region else "")
         + f"IMC : {p['imc']} - Besoin estimé : environ {p['kcal']} kcal/jour",
-        menu_principal(),
+        boutons_profil(),
     )
 
 
@@ -464,21 +438,54 @@ async def bouton_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     elif q.data == "aide":
         await afficher_aide(update, context)
     elif q.data == "accueil":
-        await accueil(update, context)
+        prenom = db.lire_prenom(update.effective_user.id)
+        await repondre(
+            update,
+            f"Que voulez-vous faire{', ' + prenom if prenom else ''} ?",
+            menu_principal(),
+        )
 
 
 # ---------------------------------------------------------------------------
 # Questionnaire
 # ---------------------------------------------------------------------------
+MENTION_DONNEES = (
+    "Vos réponses sont enregistrées pour personnaliser vos conseils. Vous "
+    "pouvez les effacer à tout moment (bouton « Supprimer mes données » dans "
+    "votre profil)."
+)
+_PRENOM_RE = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,29}$")
+
+
 async def demarrer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if update.callback_query:
         await update.callback_query.answer()
+    prenom = db.lire_prenom(update.effective_user.id)
     context.user_data.clear()
     await repondre(
         update,
-        "Parfait, quelques questions pour créer votre profil.\n\n" + AVERTISSEMENT,
+        "Parfait, quelques questions pour créer votre profil.\n\n"
+        + AVERTISSEMENT + "\n\n" + MENTION_DONNEES,
     )
-    await repondre(update, TXT_SEXE, boutons("sexe", SEXES, 2))
+    if prenom:  # déjà connu : on ne le redemande pas
+        context.user_data["prenom"] = prenom
+        await repondre(update, TXT_SEXE, boutons("sexe", SEXES, 2))
+        return SEXE
+    await repondre(update, "Comment dois-je vous appeler ? Écrivez votre prénom.")
+    return PRENOM
+
+
+async def recevoir_prenom(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    saisie = " ".join(update.message.text.split())
+    if not _PRENOM_RE.match(saisie):
+        await update.message.reply_text(
+            "Écrivez seulement votre prénom, avec des lettres (30 caractères au maximum)."
+        )
+        return PRENOM
+    prenom = saisie.title() if (saisie.islower() or saisie.isupper()) else saisie
+    context.user_data["prenom"] = prenom
+    await update.message.reply_text(f"Enchanté {prenom} !")
+    await update.message.reply_text(TXT_SEXE, reply_markup=boutons("sexe", SEXES, 2))
     return SEXE
 
 
@@ -597,8 +604,11 @@ async def terminer_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     )
     sauver_profil(update.effective_user.id, d)
 
-    message = (
-        "Votre profil est enregistré.\n\n"
+    debut = (
+        f"Merci {d['prenom']}, votre profil est enregistré.\n\n"
+        if d.get("prenom") else "Votre profil est enregistré.\n\n"
+    )
+    message = debut + (
         f"IMC : {d['imc']} ({categorie_imc(d['imc'])})\n"
         f"Besoin estimé : environ {d['kcal']} kcal par jour\n\n"
         f"{CONSEILS[d['patho']]}\n"
@@ -703,7 +713,8 @@ async def _ack(update: Update) -> None:
 def texte_proposition(prop: dict, d: dict, region: str) -> str:
     base, prot, legumes = prop["base"], prop["proteine"], prop["legumes"]
     lignes = [
-        f"Idée pour ce {d['meal'].lower()} (région {region}) :",
+        (f"{d['prenom']}, voici" if d.get("prenom") else "Voici")
+        + f" une idée pour ce {d['meal'].lower()} (région {region}) :",
         "",
         f"- Base : {base['nom']} ({repas.portion_affichee(base)})",
         f"- Protéine : {prot['nom']} ({repas.portion_affichee(prot)})",
@@ -734,6 +745,7 @@ async def proposer_repas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     p = lire_profil(uid)
     region = lire_region(uid)
     d = _etat_repas(context)
+    d["prenom"] = p["prenom"] if p else None
     if p is None or not region or not d.get("meal"):
         await repondre(
             update,
@@ -859,6 +871,113 @@ async def autre_proposition(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
 
 # ---------------------------------------------------------------------------
+# Accès par code, avis, suppression des données, commandes d'administration
+# ---------------------------------------------------------------------------
+async def verifier_acces(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Si un code d'invitation est défini, bloque tant que la personne ne l'a pas saisi."""
+    if not CODE_TEST:
+        return
+    user = update.effective_user
+    if user is None or user.id == ADMIN_ID or db.a_acces(user.id):
+        return
+    msg = update.message
+    if msg and msg.text:
+        saisie = msg.text.strip()
+        if saisie.lower().startswith("/monid"):
+            return
+        if saisie.lower() == CODE_TEST.lower():
+            db.donner_acces(user.id)
+            await msg.reply_text("Code accepté, bienvenue !")
+            await accueil(update, context)
+            raise ApplicationHandlerStop
+    if update.callback_query:
+        await update.callback_query.answer()
+    await repondre(
+        update,
+        "Ce bot est en phase de test. Pour l'utiliser, écrivez votre code "
+        "d'invitation.",
+    )
+    raise ApplicationHandlerStop
+
+
+async def monid(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        f"Votre identifiant Telegram : {update.effective_user.id}"
+    )
+
+
+def _est_admin(update: Update) -> bool:
+    return bool(ADMIN_ID) and update.effective_user.id == ADMIN_ID
+
+
+async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not _est_admin(update):
+        await update.message.reply_text("Commande réservée à l'administrateur.")
+        return
+    s = db.statistiques()
+    await update.message.reply_text(
+        f"Profils complets : {s['profils']}\n"
+        f"Personnes ayant saisi le code : {s['acces']}\n"
+        f"Avis reçus : {s['avis']}"
+    )
+
+
+async def avis_liste(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not _est_admin(update):
+        await update.message.reply_text("Commande réservée à l'administrateur.")
+        return
+    liste = db.derniers_avis(15)
+    if not liste:
+        await update.message.reply_text("Aucun avis pour l'instant.")
+        return
+    lignes = [f"{d:%d/%m %H:%M} - {prenom} : {texte}" for d, prenom, texte in liste]
+    await update.message.reply_text("\n\n".join(lignes)[:3900])
+
+
+async def avis_debut(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await _ack(update)
+    await repondre(
+        update,
+        "Votre avis m'aide à améliorer MiaFood. Écrivez-le en un seul message : "
+        "ce qui vous a plu, ce qui vous a bloqué ou ce qui manque.",
+        InlineKeyboardMarkup([[InlineKeyboardButton("Annuler", callback_data="annuler")]]),
+    )
+    return AVIS
+
+
+async def recevoir_avis(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    db.ajouter_avis(update.effective_user.id, update.message.text.strip()[:1500])
+    await repondre(update, "Merci pour votre avis, il est bien enregistré.", menu_principal())
+    return ConversationHandler.END
+
+
+async def suppr_demande(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _ack(update)
+    await repondre(
+        update,
+        "Voulez-vous vraiment supprimer votre profil et vos avis ? "
+        "Cette action est définitive.",
+        InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("Oui, tout supprimer", callback_data="suppr_ok")],
+                [InlineKeyboardButton("Non, garder", callback_data="accueil")],
+            ]
+        ),
+    )
+
+
+async def suppr_ok(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await _ack(update)
+    db.supprimer_utilisateur(update.effective_user.id)
+    context.user_data.clear()
+    await repondre(
+        update,
+        "Vos données ont été supprimées. Vous pouvez recréer un profil quand vous voulez.",
+        menu_principal(),
+    )
+
+
+# ---------------------------------------------------------------------------
 # Construction de l'application
 # ---------------------------------------------------------------------------
 def construire_app(token: str) -> Application:
@@ -870,6 +989,10 @@ def construire_app(token: str) -> Application:
         & ~filters.COMMAND
         & ~filters.Regex(re.compile(r"^\s*annuler\s*$", re.IGNORECASE))
     )
+
+    # Contrôle d'accès : s'exécute avant tout le reste
+    app.add_handler(MessageHandler(filters.ALL, verifier_acces), group=-1)
+    app.add_handler(CallbackQueryHandler(verifier_acces), group=-1)
 
     def fallbacks():
         return [
@@ -889,6 +1012,7 @@ def construire_app(token: str) -> Application:
                 CommandHandler("creer", demarrer),
             ],
             states={
+                PRENOM: [MessageHandler(texte, recevoir_prenom)],
                 SEXE: [
                     CallbackQueryHandler(recevoir_sexe, pattern="^sexe:"),
                     MessageHandler(texte, rappel_boutons(TXT_SEXE, "sexe", SEXES, 2, SEXE)),
@@ -955,12 +1079,30 @@ def construire_app(token: str) -> Application:
         )
     )
 
+    # Avis des testeurs
+    app.add_handler(
+        ConversationHandler(
+            entry_points=[
+                CallbackQueryHandler(avis_debut, pattern="^avis$"),
+                CommandHandler("avis", avis_debut),
+            ],
+            states={AVIS: [MessageHandler(texte, recevoir_avis)]},
+            fallbacks=fallbacks(),
+        )
+    )
+
     # Hors questionnaire
     app.add_handler(CommandHandler("start", accueil))
     app.add_handler(CommandHandler("menu", accueil))
     app.add_handler(CommandHandler("profil", afficher_profil))
     app.add_handler(CommandHandler("plan", afficher_plan))
     app.add_handler(CommandHandler("aide", afficher_aide))
+    app.add_handler(CommandHandler("monid", monid))
+    app.add_handler(CommandHandler("stats", stats))
+    app.add_handler(CommandHandler("avis_liste", avis_liste))
+    app.add_handler(CommandHandler("supprimer", suppr_demande))
+    app.add_handler(CallbackQueryHandler(suppr_demande, pattern="^suppr$"))
+    app.add_handler(CallbackQueryHandler(suppr_ok, pattern="^suppr_ok$"))
     app.add_handler(CallbackQueryHandler(bouton_menu, pattern="^(profil|plan|aide|accueil)$"))
     app.add_handler(CallbackQueryHandler(liste_situations, pattern="^sits$"))
     app.add_handler(CallbackQueryHandler(autre_proposition, pattern="^autre$"))

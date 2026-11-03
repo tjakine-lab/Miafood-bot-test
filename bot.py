@@ -77,13 +77,44 @@ OBJECTIFS = ["Perdre du poids", "Améliorer ma santé", "Garder mon poids"]
 PATHOS = [
     "Aucune",
     "Diabète",
-    "Diabète et hypertension",
     "Hypertension",
     "Foie gras",
     "Enceinte ou allaitante",
 ]
-PATHOS_DIABETE = {"Diabète", "Diabète et hypertension"}
-TYPES_DIABETE = ["Type 1", "Type 2", "Prédiabète", "Je ne sais pas"]
+TYPES_DIABETE = ["Type 1", "Type 2", "Prédiabète", "Diabète de grossesse", "Je ne sais pas"]
+TYPE_GESTATIONNEL = "Diabète de grossesse"
+PATHO_GROSSESSE = "Enceinte ou allaitante"
+MENU = "__menu__"  # repère : « afficher le menu adapté à la personne »
+
+
+def liste_patho(patho) -> list:
+    """« Diabète, Hypertension » -> ['Diabète', 'Hypertension'] (gère l'ancien format)."""
+    if not patho:
+        return []
+    if patho == "Diabète et hypertension":  # ancien profil à valeur unique
+        return ["Diabète", "Hypertension"]
+    return [x.strip() for x in patho.split(",") if x.strip()]
+
+
+def a_diabete(patho) -> bool:
+    return "Diabète" in liste_patho(patho)
+
+
+def a_hypertension(patho) -> bool:
+    return "Hypertension" in liste_patho(patho)
+
+
+def grossesse(p) -> bool:
+    """Enceinte ou allaitante, ou diabète de grossesse."""
+    return PATHO_GROSSESSE in liste_patho(p["patho"]) or p.get("type_diabete") == TYPE_GESTATIONNEL
+
+
+MSG_GROSSESSE = (
+    "Pendant la grossesse et l'allaitement, et encore plus avec un diabète, "
+    "l'alimentation doit être suivie de près par votre médecin ou votre "
+    "sage-femme. Je ne propose donc ni plan de repas ni idée de repas pour "
+    "le moment."
+)
 
 TXT_SEXE = "Vous êtes :"
 TXT_ACTIVITE = (
@@ -94,7 +125,10 @@ TXT_ACTIVITE = (
     "- Très active : travail très physique ou sport tous les jours"
 )
 TXT_OBJECTIF = "Quel est votre objectif principal ?"
-TXT_PATHO = "Avez-vous un problème de santé à prendre en compte ?"
+TXT_PATHO = (
+    "Avez-vous un ou plusieurs problèmes de santé à prendre en compte ?\n"
+    "Appuyez sur chacun de ceux qui vous concernent, puis sur « Valider »."
+)
 TXT_TYPE = (
     "Quel type de diabète avez-vous ?\n"
     "Si vous ne le savez pas, choisissez « Je ne sais pas » et demandez-le "
@@ -114,6 +148,11 @@ ACCUEIL = (
     "Bonjour, je suis MiaFood, votre assistant pour mieux manger.\n\n"
     "Que voulez-vous faire ?"
 )
+ACCUEIL_NOUVEAU = (
+    "Bonjour, je suis MiaFood, votre assistant pour mieux manger.\n\n"
+    "Pour commencer, créons votre profil : cela me permet de vous donner des "
+    "conseils adaptés à vous. Cela prend environ deux minutes."
+)
 
 # Conseils généraux par situation. À REMPLACER par des règles validées par un
 # professionnel de santé avant d'ouvrir le bot à du public.
@@ -122,18 +161,23 @@ CONSEILS = {
     "féculents en portion modérée, et peu de boissons sucrées.",
     "Diabète": "Privilégiez les aliments qui font peu monter le sucre (légumes, "
     "haricots, poisson) et limitez les boissons sucrées. Répartissez les "
-    "féculents sur la journée. Suivez toujours les consignes de votre médecin.",
-    "Diabète et hypertension": "Privilégiez les aliments qui font peu monter le "
-    "sucre (légumes, haricots, poisson), limitez les boissons sucrées, et "
-    "réduisez le sel et les cubes d'assaisonnement. Suivez toujours les "
-    "consignes de votre médecin.",
+    "féculents sur la journée.",
     "Hypertension": "Limitez le sel, les cubes d'assaisonnement et les aliments "
     "très salés (poisson fumé salé, charcuterie). Mangez plus de légumes et de "
-    "fruits. Suivez toujours les consignes de votre médecin.",
+    "fruits.",
     "Foie gras": "Réduisez les boissons sucrées, l'alcool et les fritures. "
-    "Privilégiez légumes, poisson et cuissons à l'eau ou grillées. Un avis "
-    "médical reste indispensable.",
+    "Privilégiez légumes, poisson et cuissons à l'eau ou grillées.",
 }
+
+
+def conseils_pour(patho) -> str:
+    """Rassemble les conseils de toutes les situations de la personne."""
+    conditions = [c for c in liste_patho(patho) if c in CONSEILS and c != "Aucune"]
+    if not conditions:
+        return CONSEILS["Aucune"]
+    return " ".join(CONSEILS[c] for c in conditions) + (
+        " Suivez toujours les consignes de votre médecin."
+    )
 
 # ---------------------------------------------------------------------------
 # Plans de repas (fichier plans.json, extrait de l'onglet Plans_Repas)
@@ -163,19 +207,19 @@ PLANS = charger_plans()
 
 def plans_pour(p) -> list:
     """Plans adaptés à un profil (ligne SQLite ou dict)."""
-    if p["patho"] not in PATHOS_DIABETE:
+    if not a_diabete(p["patho"]) or grossesse(p):
         return []
     type_diab = p["type_diabete"] or ""
     if type_diab not in ("Type 1", "Type 2", "Prédiabète"):
         return []
     types = [type_diab]
-    if type_diab == "Type 2" and p["patho"] == "Diabète et hypertension":
+    if type_diab == "Type 2" and a_hypertension(p["patho"]):
         types = ["Type 2 + Hypertension", "Type 2"]
     return [pl for t in types for pl in PLANS.values() if pl["type"] == t]
 
 
 def plan_par_defaut(liste: list, p):
-    if p["patho"] == "Diabète et hypertension":
+    if a_hypertension(p["patho"]):
         for pl in liste:
             if pl["type"] == "Type 2 + Hypertension":
                 return pl
@@ -196,7 +240,7 @@ def texte_plan(pl: dict, p) -> str:
         f"19h00, dîner : {r['diner']}\n\n"
         f"IG moyen estimé : {pl['ig']}"
     )
-    if p["patho"] == "Diabète et hypertension" and pl["type"] != "Type 2 + Hypertension":
+    if a_hypertension(p["patho"]) and pl["type"] != "Type 2 + Hypertension":
         t += "\nPensez aussi à limiter le sel."
     return t + "\n\n" + AVERTISSEMENT_PLAN
 
@@ -269,17 +313,36 @@ def boutons(prefixe, options, colonnes=1, annuler=True):
     return InlineKeyboardMarkup(lignes)
 
 
-def menu_principal():
+def menu_principal(a_profil: bool = True):
+    """Menu complet si la personne a un profil, sinon invitation à le créer."""
+    if not a_profil:
+        return InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("Créer mon profil", callback_data="creer")],
+                [InlineKeyboardButton("Aide", callback_data="aide")],
+            ]
+        )
     return InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("Créer ou modifier mon profil", callback_data="creer")],
             [InlineKeyboardButton("Voir mon profil", callback_data="profil")],
+            [InlineKeyboardButton("Modifier mon profil", callback_data="creer")],
             [InlineKeyboardButton("Mon plan de repas", callback_data="plan")],
             [InlineKeyboardButton("Que manger aujourd'hui ?", callback_data="repas")],
             [InlineKeyboardButton("Donner mon avis", callback_data="avis")],
             [InlineKeyboardButton("Aide", callback_data="aide")],
         ]
     )
+
+
+def boutons_patho(selection: set):
+    """Choix multiple : chaque bouton s'active ou se désactive, puis « Valider »."""
+    lignes = [
+        [InlineKeyboardButton(("✔ " if i in selection else "") + nom, callback_data=f"pat:{i}")]
+        for i, nom in enumerate(PATHOS)
+    ]
+    lignes.append([InlineKeyboardButton("Valider", callback_data="pat:ok")])
+    lignes.append([InlineKeyboardButton("Annuler", callback_data="annuler")])
+    return InlineKeyboardMarkup(lignes)
 
 
 def boutons_profil():
@@ -301,6 +364,8 @@ def boutons_plan(autres_situations: bool):
 
 async def repondre(update: Update, texte: str, markup=None) -> None:
     """Envoie un message, que l'on vienne d'un texte ou d'un bouton."""
+    if isinstance(markup, str) and markup == MENU:
+        markup = menu_principal(lire_profil(update.effective_user.id) is not None)
     await update.effective_chat.send_message(texte, reply_markup=markup)
 
 
@@ -333,17 +398,19 @@ def nombre(texte: str):
 async def accueil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     uid = update.effective_user.id
     prenom = db.lire_prenom(uid)
-    if prenom and lire_profil(uid):
+    if lire_profil(uid) is None:
+        texte = ACCUEIL_NOUVEAU
+    elif prenom:
         texte = f"Bonjour {prenom}, content de vous revoir.\n\nQue voulez-vous faire ?"
     else:
-        texte = ACCUEIL
-    await repondre(update, texte, menu_principal())
+        texte = "Bonjour, content de vous revoir.\n\nQue voulez-vous faire ?"
+    await repondre(update, texte, MENU)
 
 
 async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     p = lire_profil(update.effective_user.id)
     if p is None:
-        await repondre(update, "Vous n'avez pas encore de profil.", menu_principal())
+        await repondre(update, "Vous n'avez pas encore de profil.", MENU)
         return
     region = lire_region(update.effective_user.id)
     sante = p["patho"]
@@ -357,7 +424,10 @@ async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         f"Objectif : {p['objectif']}\n"
         f"Situation de santé : {sante}\n"
         + (f"Région : {region}\n" if region else "")
-        + f"IMC : {p['imc']} - Besoin estimé : environ {p['kcal']} kcal/jour",
+        + (
+            f"IMC : {p['imc']} - Besoin estimé : environ {p['kcal']} kcal/jour"
+            if p["kcal"] else f"IMC : {p['imc']}"
+        ),
         boutons_profil(),
     )
 
@@ -365,12 +435,14 @@ async def afficher_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 async def afficher_plan(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     p = lire_profil(update.effective_user.id)
     if p is None:
-        await repondre(update, "Créez d'abord votre profil.", menu_principal())
+        await repondre(update, "Créez d'abord votre profil.", MENU)
         return
 
     liste = plans_pour(p)
     if not liste:
-        if p["patho"] in PATHOS_DIABETE:
+        if grossesse(p):
+            message = MSG_GROSSESSE
+        elif a_diabete(p["patho"]):
             message = (
                 "Pour vous proposer un plan, j'ai besoin de connaître votre type "
                 "de diabète. Demandez-le à votre médecin, puis mettez à jour "
@@ -382,7 +454,7 @@ async def afficher_plan(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
                 "personnes diabétiques (Type 1, Type 2, prédiabète). Les autres "
                 "profils arriveront bientôt."
             )
-        await repondre(update, message, menu_principal())
+        await repondre(update, message, MENU)
         return
 
     pl = plan_par_defaut(liste, p)
@@ -424,7 +496,7 @@ async def afficher_aide(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         "voir votre plan de repas ou demander une idée de repas selon ce que "
         "vous avez déjà mangé. Pour revenir au menu à tout moment, "
         "envoyez simplement un message.\n\n" + AVERTISSEMENT,
-        menu_principal(),
+        MENU,
     )
 
 
@@ -442,7 +514,7 @@ async def bouton_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await repondre(
             update,
             f"Que voulez-vous faire{', ' + prenom if prenom else ''} ?",
-            menu_principal(),
+            MENU,
         )
 
 
@@ -508,11 +580,12 @@ async def recevoir_age(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         await update.message.reply_text("Entrez votre âge avec des chiffres, par exemple 35.")
         return AGE
     if age < 18:
-        await update.message.reply_text(
+        await repondre(
+            update,
             "Pour les moins de 18 ans, l'alimentation doit être suivie par un "
             "professionnel de santé. Je ne peux pas créer de plan ici. "
             "Parlez-en à un médecin ou à un nutritionniste.",
-            reply_markup=menu_principal(),
+            MENU,
         )
         return ConversationHandler.END
     context.user_data["age"] = int(age)
@@ -557,32 +630,62 @@ async def recevoir_objectif(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     if i is None:
         return OBJECTIF
     context.user_data["objectif"] = OBJECTIFS[i]
-    await repondre(update, TXT_PATHO, boutons("pat", PATHOS))
+    context.user_data["patho_sel"] = set()
+    await repondre(update, TXT_PATHO, boutons_patho(set()))
     return PATHO
 
 
 async def recevoir_patho(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    i = await lire_choix(update, PATHOS)
-    if i is None:
+    """Choix multiple : chaque appui active ou désactive une situation."""
+    q = update.callback_query
+    sel = context.user_data.setdefault("patho_sel", set())
+    action = q.data.split(":", 1)[1]
+
+    if action != "ok":
+        try:
+            i = int(action)
+            PATHOS[i]
+        except (ValueError, IndexError):
+            await q.answer()
+            return PATHO
+        if i == 0:  # « Aucune » annule tout le reste
+            deja = 0 in sel
+            sel.clear()
+            if not deja:
+                sel.add(0)
+        else:
+            sel.discard(0)
+            sel.symmetric_difference_update({i})
+        await q.answer()
+        try:
+            await q.edit_message_reply_markup(boutons_patho(sel))
+        except Exception:
+            pass
         return PATHO
-    choix = PATHOS[i]
 
-    if choix == "Enceinte ou allaitante":
-        await repondre(
-            update,
-            "Pendant la grossesse et l'allaitement, l'alimentation doit être "
-            "suivie par un professionnel de santé. Je ne peux pas vous donner "
-            "de plan ici. Parlez-en à votre sage-femme ou à votre médecin.",
-            menu_principal(),
-        )
-        return ConversationHandler.END
-
-    context.user_data["patho"] = choix
+    if not sel:
+        await q.answer("Choisissez au moins une réponse (ou « Aucune »).", show_alert=True)
+        return PATHO
+    await q.answer()
+    choisis = [PATHOS[i] for i in sorted(sel)]
+    try:
+        await q.edit_message_text(f"{TXT_PATHO}\n\n✔ " + ", ".join(choisis))
+    except Exception:
+        pass
+    context.user_data["patho"] = ", ".join(choisis)
     context.user_data["type_diabete"] = ""
-    if choix in PATHOS_DIABETE:
+    context.user_data.pop("patho_sel", None)
+    if "Diabète" in choisis:
         await repondre(update, TXT_TYPE, boutons("typ", TYPES_DIABETE))
         return TYPE_DIAB
     return await terminer_profil(update, context)
+
+
+async def rappel_patho(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    sel = context.user_data.setdefault("patho_sel", set())
+    await update.message.reply_text("Merci d'appuyer sur les boutons ci-dessous.")
+    await update.message.reply_text(TXT_PATHO, reply_markup=boutons_patho(sel))
+    return PATHO
 
 
 async def recevoir_type(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -598,30 +701,37 @@ async def recevoir_type(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 async def terminer_profil(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     d = context.user_data
     d["imc"] = calcul_imc(d["poids"], d["taille"])
-    d["kcal"], note = calcul_calories(
-        d["sexe"], d["age"], d["taille"], d["poids"],
-        d["facteur"], d["objectif"], d["imc"],
-    )
+    enceinte = grossesse(d)
+    if enceinte:
+        d["kcal"], note = 0, ""  # pas d'objectif calorique pendant la grossesse
+    else:
+        d["kcal"], note = calcul_calories(
+            d["sexe"], d["age"], d["taille"], d["poids"],
+            d["facteur"], d["objectif"], d["imc"],
+        )
     sauver_profil(update.effective_user.id, d)
 
     debut = (
         f"Merci {d['prenom']}, votre profil est enregistré.\n\n"
         if d.get("prenom") else "Votre profil est enregistré.\n\n"
     )
-    message = debut + (
-        f"IMC : {d['imc']} ({categorie_imc(d['imc'])})\n"
-        f"Besoin estimé : environ {d['kcal']} kcal par jour\n\n"
-        f"{CONSEILS[d['patho']]}\n"
-    )
-    if note:
-        message += f"\n{note}\n"
-    if d["patho"] in PATHOS_DIABETE and not d["type_diabete"]:
-        message += (
-            "\nDemandez à votre médecin votre type de diabète, puis mettez à "
-            "jour votre profil pour recevoir un plan de repas.\n"
+    if enceinte:
+        message = debut + MSG_GROSSESSE
+    else:
+        message = debut + (
+            f"IMC : {d['imc']} ({categorie_imc(d['imc'])})\n"
+            f"Besoin estimé : environ {d['kcal']} kcal par jour\n\n"
+            f"{conseils_pour(d['patho'])}\n"
         )
+        if note:
+            message += f"\n{note}\n"
+        if a_diabete(d["patho"]) and not d["type_diabete"]:
+            message += (
+                "\nDemandez à votre médecin votre type de diabète, puis mettez à "
+                "jour votre profil pour recevoir un plan de repas.\n"
+            )
     message += f"\n{AVERTISSEMENT}"
-    await repondre(update, message, menu_principal())
+    await repondre(update, message, MENU)
     return ConversationHandler.END
 
 
@@ -633,7 +743,7 @@ async def annuler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         except Exception:
             pass
     context.user_data.clear()
-    await repondre(update, "D'accord, on arrête ici.", menu_principal())
+    await repondre(update, "D'accord, on arrête ici.", MENU)
     return ConversationHandler.END
 
 
@@ -751,7 +861,7 @@ async def proposer_repas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             update,
             "Je n'ai plus les informations de cette conversation. Relancez "
             "« Que manger aujourd'hui ? ».",
-            menu_principal(),
+            MENU,
         )
         return
     mange = [repas.ALIMENTS[i] for i in d["eaten"] if i in repas.ALIMENTS]
@@ -768,7 +878,7 @@ async def proposer_repas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             update,
             "Je n'ai pas trouvé de combinaison adaptée. Parlez-en à un "
             "nutritionniste.",
-            menu_principal(),
+            MENU,
         )
         return
     d["derniere"] = prop["signature"]
@@ -780,14 +890,17 @@ async def repas_debut(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     uid = update.effective_user.id
     p = lire_profil(uid)
     if p is None:
-        await repondre(update, "Créez d'abord votre profil.", menu_principal())
+        await repondre(update, "Créez d'abord votre profil.", MENU)
         return ConversationHandler.END
-    if p["patho"] not in PATHOS_DIABETE:
+    if grossesse(p):
+        await repondre(update, MSG_GROSSESSE, MENU)
+        return ConversationHandler.END
+    if not a_diabete(p["patho"]):
         await repondre(
             update,
             "Pour l'instant, cette fonction est disponible pour les personnes "
             "diabétiques. Les autres profils arriveront bientôt.",
-            menu_principal(),
+            MENU,
         )
         return ConversationHandler.END
     context.user_data.pop("repas", None)
@@ -863,7 +976,7 @@ async def autre_proposition(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         await repondre(
             update,
             "Relancez « Que manger aujourd'hui ? » pour une nouvelle idée.",
-            menu_principal(),
+            MENU,
         )
         return
     d["essai"] += 1
@@ -947,7 +1060,7 @@ async def avis_debut(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def recevoir_avis(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     db.ajouter_avis(update.effective_user.id, update.message.text.strip()[:1500])
-    await repondre(update, "Merci pour votre avis, il est bien enregistré.", menu_principal())
+    await repondre(update, "Merci pour votre avis, il est bien enregistré.", MENU)
     return ConversationHandler.END
 
 
@@ -973,7 +1086,7 @@ async def suppr_ok(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await repondre(
         update,
         "Vos données ont été supprimées. Vous pouvez recréer un profil quand vous voulez.",
-        menu_principal(),
+        MENU,
     )
 
 
@@ -994,22 +1107,26 @@ def construire_app(token: str) -> Application:
     app.add_handler(MessageHandler(filters.ALL, verifier_acces), group=-1)
     app.add_handler(CallbackQueryHandler(verifier_acces), group=-1)
 
-    def fallbacks():
-        return [
-            CallbackQueryHandler(annuler, pattern="^annuler$"),
-            CommandHandler("annuler", annuler),
-            MessageHandler(
-                filters.Regex(re.compile(r"^\s*annuler\s*$", re.IGNORECASE)), annuler
-            ),
-            CommandHandler("start", start_et_fin),
-            CommandHandler("menu", start_et_fin),
-        ]
+    # Une seule conversation : on peut passer d'un parcours à un autre à tout
+    # moment (allow_reentry), et les boutons du menu la terminent proprement.
+    def puis_fin(fonction):
+        async def _executer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+            await fonction(update, context)
+            return ConversationHandler.END
+
+        return _executer
 
     app.add_handler(
         ConversationHandler(
             entry_points=[
                 CallbackQueryHandler(demarrer, pattern="^creer$"),
                 CommandHandler("creer", demarrer),
+                CallbackQueryHandler(repas_debut, pattern="^repas$"),
+                CommandHandler("repas", repas_debut),
+                CallbackQueryHandler(corriger, pattern="^corr$"),
+                CallbackQueryHandler(changer_region, pattern="^chreg$"),
+                CallbackQueryHandler(avis_debut, pattern="^avis$"),
+                CommandHandler("avis", avis_debut),
             ],
             states={
                 PRENOM: [MessageHandler(texte, recevoir_prenom)],
@@ -1035,7 +1152,7 @@ def construire_app(token: str) -> Application:
                 ],
                 PATHO: [
                     CallbackQueryHandler(recevoir_patho, pattern="^pat:"),
-                    MessageHandler(texte, rappel_boutons(TXT_PATHO, "pat", PATHOS, 1, PATHO)),
+                    MessageHandler(texte, rappel_patho),
                 ],
                 TYPE_DIAB: [
                     CallbackQueryHandler(recevoir_type, pattern="^typ:"),
@@ -1043,21 +1160,6 @@ def construire_app(token: str) -> Application:
                         texte, rappel_boutons(TXT_TYPE, "typ", TYPES_DIABETE, 1, TYPE_DIAB)
                     ),
                 ],
-            },
-            fallbacks=fallbacks(),
-        )
-    )
-
-    # Que manger aujourd'hui ?
-    app.add_handler(
-        ConversationHandler(
-            entry_points=[
-                CallbackQueryHandler(repas_debut, pattern="^repas$"),
-                CommandHandler("repas", repas_debut),
-                CallbackQueryHandler(corriger, pattern="^corr$"),
-                CallbackQueryHandler(changer_region, pattern="^chreg$"),
-            ],
-            states={
                 REGION: [
                     CallbackQueryHandler(recevoir_region, pattern="^reg:"),
                     MessageHandler(
@@ -1074,20 +1176,30 @@ def construire_app(token: str) -> Application:
                     CallbackQueryHandler(rien_mange, pattern="^rien$"),
                     MessageHandler(texte, recevoir_mange),
                 ],
+                AVIS: [MessageHandler(texte, recevoir_avis)],
             },
-            fallbacks=fallbacks(),
-        )
-    )
-
-    # Avis des testeurs
-    app.add_handler(
-        ConversationHandler(
-            entry_points=[
-                CallbackQueryHandler(avis_debut, pattern="^avis$"),
-                CommandHandler("avis", avis_debut),
+            fallbacks=[
+                CallbackQueryHandler(annuler, pattern="^annuler$"),
+                CommandHandler("annuler", annuler),
+                MessageHandler(
+                    filters.Regex(re.compile(r"^\s*annuler\s*$", re.IGNORECASE)), annuler
+                ),
+                CommandHandler("start", start_et_fin),
+                CommandHandler("menu", start_et_fin),
+                CallbackQueryHandler(
+                    puis_fin(bouton_menu), pattern="^(profil|plan|aide|accueil)$"
+                ),
+                CallbackQueryHandler(puis_fin(liste_situations), pattern="^sits$"),
+                CallbackQueryHandler(puis_fin(montrer_plan), pattern="^pl:"),
+                CallbackQueryHandler(puis_fin(autre_proposition), pattern="^autre$"),
+                CallbackQueryHandler(puis_fin(suppr_demande), pattern="^suppr$"),
+                CallbackQueryHandler(puis_fin(suppr_ok), pattern="^suppr_ok$"),
+                CommandHandler("profil", puis_fin(afficher_profil)),
+                CommandHandler("plan", puis_fin(afficher_plan)),
+                CommandHandler("aide", puis_fin(afficher_aide)),
+                CommandHandler("supprimer", puis_fin(suppr_demande)),
             ],
-            states={AVIS: [MessageHandler(texte, recevoir_avis)]},
-            fallbacks=fallbacks(),
+            allow_reentry=True,
         )
     )
 

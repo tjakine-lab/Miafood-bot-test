@@ -152,6 +152,8 @@ def trouver_aliment(texte: str):
     jetons = {_singulier(t) for t in q.split() if t not in STOP}
     if not jetons:
         return None
+    if len(jetons) > 1 and "salade" in jetons:  # « salade de concombre » -> concombre
+        jetons.discard("salade")
     if len(jetons) == 1:
         seul = next(iter(jetons))
         if seul in _ALIAS:
